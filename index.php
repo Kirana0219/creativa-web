@@ -18,6 +18,15 @@ switch ($page) {
         $controller->signin();
         exit;
 
+    case 'login':
+        header('Location: index.php?page=signin');
+        exit;
+
+    case 'logout':
+        $controller = new AuthController();
+        $controller->logout();
+        exit;
+
     case 'signup':
         $controller = new AuthController();
         $controller->signup();

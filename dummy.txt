@@ -1,0 +1,153 @@
+-- =========================================================
+-- CREATIVA - DUMMY DATA (SEMUA TABEL)
+-- Sesuai skema: users, customers, categories, products,
+--               orders, order_items
+-- Jalankan setelah tabel-tabel di atas sudah dibuat (kosong).
+-- Import lewat phpMyAdmin > tab SQL > paste > Go.
+-- =========================================================
+
+USE db_creativa;
+
+-- ---------------------------------------------------------
+-- 1. CATEGORIES (6 kategori)
+-- ---------------------------------------------------------
+INSERT INTO categories (id, name) VALUES
+(1, 'Beverages'),
+(2, 'Home Decor'),
+(3, 'Lifestyle'),
+(4, 'Fashion'),
+(5, 'Snacks'),
+(6, 'Stationery');
+
+-- ---------------------------------------------------------
+-- 2. PRODUCTS (22 produk, tersebar di 6 kategori)
+-- ---------------------------------------------------------
+INSERT INTO products (id, name, category_id, price, stock, image, status, created_at) VALUES
+(1,  'Premium Arabica Coffee',       1, 85000,  142, NULL, 'in_stock',     NOW() - INTERVAL 25 DAY),
+(2,  'Artisan Coffee Mug',           1, 150000,  60, NULL, 'in_stock',     NOW() - INTERVAL 24 DAY),
+(3,  'Matcha Green Tea Powder',      1, 65000,    9, NULL, 'low_stock',    NOW() - INTERVAL 20 DAY),
+(4,  'Cold Brew Concentrate 500ml',  1, 45000,   35, NULL, 'in_stock',     NOW() - INTERVAL 18 DAY),
+(5,  'Herbal Tea Sampler Box',       1, 58000,    0, NULL, 'out_of_stock', NOW() - INTERVAL 15 DAY),
+
+(6,  'Handwoven Bamboo Basket',      2, 120000,   8, NULL, 'low_stock',    NOW() - INTERVAL 22 DAY),
+(7,  'Rattan Wall Mirror',           2, 275000,  14, NULL, 'in_stock',     NOW() - INTERVAL 19 DAY),
+(8,  'Ceramic Vase Set (3pcs)',      2, 180000,   0, NULL, 'out_of_stock', NOW() - INTERVAL 17 DAY),
+(9,  'Batik Table Runner',           2, 95000,   27, NULL, 'in_stock',     NOW() - INTERVAL 14 DAY),
+
+(10, 'Eco-Friendly Glass Bottle',    3, 45000,    0, NULL, 'out_of_stock', NOW() - INTERVAL 21 DAY),
+(11, 'Bamboo Toothbrush Set (4pcs)', 3, 38000,   52, NULL, 'in_stock',     NOW() - INTERVAL 16 DAY),
+(12, 'Reusable Produce Bags (5pcs)', 3, 42000,    6, NULL, 'low_stock',    NOW() - INTERVAL 12 DAY),
+(13, 'Natural Soy Candle',           3, 55000,   40, NULL, 'in_stock',     NOW() - INTERVAL 10 DAY),
+
+(14, 'Modern Batik Silk Scarf',      4, 350000,  45, NULL, 'in_stock',     NOW() - INTERVAL 23 DAY),
+(15, 'Woven Rattan Handbag',         4, 225000,   7, NULL, 'low_stock',    NOW() - INTERVAL 13 DAY),
+(16, 'Handmade Leather Sandals',     4, 175000,  18, NULL, 'in_stock',     NOW() - INTERVAL 9 DAY),
+
+(17, 'Traditional Keripik Singkong', 5, 25000,   88, NULL, 'in_stock',     NOW() - INTERVAL 8 DAY),
+(18, 'Roasted Coffee Beans 250g',    5, 72000,   10, NULL, 'low_stock',    NOW() - INTERVAL 7 DAY),
+(19, 'Homemade Sambal Bawang',       5, 32000,    0, NULL, 'out_of_stock', NOW() - INTERVAL 6 DAY),
+
+(20, 'Handmade Journal Notebook',    6, 48000,   33, NULL, 'in_stock',     NOW() - INTERVAL 5 DAY),
+(21, 'Batik Pattern Sticker Pack',   6, 15000,    5, NULL, 'low_stock',    NOW() - INTERVAL 4 DAY),
+(22, 'Recycled Paper Gift Wrap',     6, 20000,   60, NULL, 'in_stock',     NOW() - INTERVAL 2 DAY);
+
+-- ---------------------------------------------------------
+-- 3. USERS (akun login / pengguna internal)
+-- Password asli semua "password123", di-hash pakai
+-- password_hash('password123', PASSWORD_DEFAULT) di PHP.
+-- Hash di bawah ini CONTOH placeholder, ganti dengan hash
+-- asli sebelum dipakai login sungguhan (lihat catatan di bawah).
+-- ---------------------------------------------------------
+INSERT INTO users (id, name, email, password, avatar, status) VALUES
+(1, 'Ahmad Santoso',   'ahmad.santoso@enterprise.com',   '$2y$10$CHANGE.THIS.HASH.PLACEHOLDER.......................', NULL, 'active'),
+(2, 'Budi Raharjo',    'budi.raharjo@enterprise.com',    '$2y$10$CHANGE.THIS.HASH.PLACEHOLDER.......................', NULL, 'active'),
+(3, 'Siti Aminah',     'siti.aminah@enterprise.com',     '$2y$10$CHANGE.THIS.HASH.PLACEHOLDER.......................', NULL, 'active'),
+(4, 'Dewi Anggraini',  'dewi.a@enterprise.com',          '$2y$10$CHANGE.THIS.HASH.PLACEHOLDER.......................', NULL, 'pending'),
+(5, 'Eko Prasetyo',    'eko.prasetyo@enterprise.com',    '$2y$10$CHANGE.THIS.HASH.PLACEHOLDER.......................', NULL, 'active');
+
+-- ---------------------------------------------------------
+-- 4. CUSTOMERS (pembeli, terpisah dari users/admin)
+-- ---------------------------------------------------------
+INSERT INTO customers (id, name, email) VALUES
+(1,  'Aditya Wijaya',      'aditya.w@email.com'),
+(2,  'Putri Lestari',      'putri.lestari@email.com'),
+(3,  'Rizky Firmansyah',   'rizky.f@email.com'),
+(4,  'Nur Halimah',        'nur.halimah@email.com'),
+(5,  'Bagus Setiawan',     'bagus.setiawan@email.com'),
+(6,  'Intan Permatasari',  'intan.p@email.com'),
+(7,  'Fajar Nugroho',      'fajar.nugroho@email.com'),
+(8,  'Ayu Kusuma',         'ayu.kusuma@email.com'),
+(9,  'Hendra Gunawan',     'hendra.gunawan@email.com'),
+(10, 'Melati Sari',        'melati.sari@email.com');
+
+-- ---------------------------------------------------------
+-- 5. ORDERS (15 pesanan, kombinasi status & payment beragam)
+-- ---------------------------------------------------------
+INSERT INTO orders (id, order_code, customer_id, order_date, payment_status, status, total_amount, created_at) VALUES
+(1,  'ORD-2849', 1,  CURDATE() - INTERVAL 24 DAY, 'paid',    'shipped',   150000, NOW() - INTERVAL 24 DAY),
+(2,  'ORD-2850', 2,  CURDATE() - INTERVAL 23 DAY, 'paid',    'shipped',   350000, NOW() - INTERVAL 23 DAY),
+(3,  'ORD-2851', 3,  CURDATE() - INTERVAL 22 DAY, 'paid',    'delivered', 215000, NOW() - INTERVAL 22 DAY),
+(4,  'ORD-2852', 4,  CURDATE() - INTERVAL 21 DAY, 'pending', 'pending',   120000, NOW() - INTERVAL 21 DAY),
+(5,  'ORD-2853', 5,  CURDATE() - INTERVAL 20 DAY, 'paid',    'shipped',    75000, NOW() - INTERVAL 20 DAY),
+(6,  'ORD-2854', 6,  CURDATE() - INTERVAL 19 DAY, 'failed',  'cancelled', 180000, NOW() - INTERVAL 19 DAY),
+(7,  'ORD-2855', 7,  CURDATE() - INTERVAL 18 DAY, 'paid',    'delivered', 225000, NOW() - INTERVAL 18 DAY),
+(8,  'ORD-2856', 8,  CURDATE() - INTERVAL 17 DAY, 'paid',    'shipped',   141000, NOW() - INTERVAL 17 DAY),
+(9,  'ORD-2857', 9,  CURDATE() - INTERVAL 16 DAY, 'pending', 'pending',    96000, NOW() - INTERVAL 16 DAY),
+(10, 'ORD-2858', 10, CURDATE() - INTERVAL 15 DAY, 'paid',    'delivered', 175000, NOW() - INTERVAL 15 DAY),
+(11, 'ORD-2859', 1,  CURDATE() - INTERVAL 10 DAY, 'paid',    'shipped',    95000, NOW() - INTERVAL 10 DAY),
+(12, 'ORD-2860', 2,  CURDATE() - INTERVAL 8 DAY,  'paid',    'pending',   110000, NOW() - INTERVAL 8 DAY),
+(13, 'ORD-2861', 3,  CURDATE() - INTERVAL 5 DAY,  'failed',  'cancelled',  72000, NOW() - INTERVAL 5 DAY),
+(14, 'ORD-2862', 4,  CURDATE() - INTERVAL 3 DAY,  'paid',    'shipped',    60000, NOW() - INTERVAL 3 DAY),
+(15, 'ORD-2863', 5,  CURDATE() - INTERVAL 1 DAY,  'pending', 'pending',   275000, NOW() - INTERVAL 1 DAY);
+
+-- ---------------------------------------------------------
+-- 6. ORDER_ITEMS (detail produk per order, total cocok
+--    dengan total_amount di tabel orders di atas)
+-- ---------------------------------------------------------
+INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
+-- Order 1: ORD-2849 -> Artisan Coffee Mug x1
+(1,  2,  1, 150000),
+
+-- Order 2: ORD-2850 -> Modern Batik Silk Scarf x1
+(2,  14, 1, 350000),
+
+-- Order 3: ORD-2851 -> Premium Arabica Coffee x2 + Cold Brew x1
+(3,  1,  2, 85000),
+(3,  4,  1, 45000),
+
+-- Order 4: ORD-2852 -> Handwoven Bamboo Basket x1
+(4,  6,  1, 120000),
+
+-- Order 5: ORD-2853 -> Traditional Keripik Singkong x3
+(5,  17, 3, 25000),
+
+-- Order 6: ORD-2854 -> Ceramic Vase Set x1
+(6,  8,  1, 180000),
+
+-- Order 7: ORD-2855 -> Woven Rattan Handbag x1
+(7,  15, 1, 225000),
+
+-- Order 8: ORD-2856 -> Matcha Green Tea x1 + Bamboo Toothbrush Set x2
+(8,  3,  1, 65000),
+(8,  11, 2, 38000),
+
+-- Order 9: ORD-2857 -> Handmade Journal Notebook x2
+(9,  20, 2, 48000),
+
+-- Order 10: ORD-2858 -> Handmade Leather Sandals x1
+(10, 16, 1, 175000),
+
+-- Order 11: ORD-2859 -> Batik Table Runner x1
+(11, 9,  1, 95000),
+
+-- Order 12: ORD-2860 -> Natural Soy Candle x2
+(12, 13, 2, 55000),
+
+-- Order 13: ORD-2861 -> Roasted Coffee Beans 250g x1
+(13, 18, 1, 72000),
+
+-- Order 14: ORD-2862 -> Batik Pattern Sticker Pack x4
+(14, 21, 4, 15000),
+
+-- Order 15: ORD-2863 -> Rattan Wall Mirror x1
+(15, 7,  1, 275000);
