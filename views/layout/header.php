@@ -1,7 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php $currentPage = $_GET['page'] ?? 'dashboard'; ?>
+    <?php
+    $currentPage = $_GET['page'] ?? 'dashboard';
+    $headerUser = null;
+
+    if (isset($_SESSION['user_id'])) {
+        require_once 'models/UserModel.php';
+        $userModel = new UserModel();
+        $headerUser = $userModel->getUserById((int) $_SESSION['user_id']);
+    }
+
+    $profileName = $headerUser['name'] ?? ($_SESSION['name'] ?? 'Admin');
+    $profileEmail = $headerUser['email'] ?? ($_SESSION['email'] ?? 'Business Owner');
+    $profileAvatar = $headerUser['avatar'] ?? '';
+    $profileAvatar = $profileAvatar ? 'assets/uploads/' . $profileAvatar : 'https://i.pravatar.cc/150?u=' . urlencode($profileEmail);
+    ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $title ?? "Creativa"; ?></title>
@@ -35,10 +49,10 @@
                 <div class="vertical-divider"></div>
 
                 <div class="profile">
-                    <img src="https://i.pravatar.cc/150?img=12">
+                    <img src="<?= htmlspecialchars($profileAvatar); ?>" alt="<?= htmlspecialchars($profileName); ?>">
                     <div class="profile-info">
-                        <h6>Admin</h6>
-                        <small>Business Owner</small>
+                        <h6><?= htmlspecialchars($profileName); ?></h6>
+                        <small><?= htmlspecialchars($profileEmail); ?></small>
                     </div>
                 </div>
             </div>

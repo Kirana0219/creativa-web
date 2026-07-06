@@ -2,17 +2,18 @@
 include 'views/layout/header.php';
 include 'views/layout/sidebar.php';
 
+$orders = $orders ?? [];
+$stats = $stats ?? [];
 $summaryCards = [
-    ['title' => 'TOTAL ORDERS', 'value' => '1,284', 'icon' => 'ri-file-list-3-line', 'color' => 'purple', 'badge' => '+12.5%', 'badgeClass' => 'success'],
-    ['title' => 'PENDING', 'value' => '45', 'icon' => 'ri-time-line', 'color' => 'orange', 'badge' => 'Active', 'badgeClass' => 'warning'],
-    ['title' => 'SHIPPED', 'value' => '912', 'icon' => 'ri-truck-line', 'color' => 'green', 'badge' => '82%', 'badgeClass' => 'success'],
-    ['title' => 'CANCELLED', 'value' => '12', 'icon' => 'ri-close-circle-line', 'color' => 'red', 'badge' => '-2.4%', 'badgeClass' => 'danger'],
+    ['title' => 'TOTAL ORDERS', 'value' => $stats['total_orders'] ?? 0, 'icon' => 'ri-file-list-3-line', 'color' => 'purple', 'badge' => 'All', 'badgeClass' => 'success'],
+    ['title' => 'PENDING', 'value' => $stats['pending_orders'] ?? 0, 'icon' => 'ri-time-line', 'color' => 'orange', 'badge' => 'Active', 'badgeClass' => 'warning'],
+    ['title' => 'SHIPPED', 'value' => $stats['shipped_orders'] ?? 0, 'icon' => 'ri-truck-line', 'color' => 'green', 'badge' => 'Sent', 'badgeClass' => 'success'],
+    ['title' => 'CANCELLED', 'value' => $stats['cancelled_orders'] ?? 0, 'icon' => 'ri-close-circle-line', 'color' => 'red', 'badge' => 'Void', 'badgeClass' => 'danger'],
 ];
 
-$statuses = ['All', 'Pending', 'Packing', 'Shipped', 'Completed', 'Cancelled'];
+$statuses = ['All', 'Pending', 'Shipped', 'Delivered', 'Cancelled'];
 $columns = ['ORDER ID', 'CUSTOMER', 'DATE', 'PRODUCT', 'AMOUNT', 'PAYMENT', 'STATUS', 'ACTION'];
 $ordersPerPage = 10;
-$hasOrders = isset($orders) && class_exists('mysqli_result') && $orders instanceof mysqli_result;
 ?>
 
 <div class="content">
@@ -40,7 +41,7 @@ $hasOrders = isset($orders) && class_exists('mysqli_result') && $orders instance
                     </div>
 
                     <span class="card-title"><?= $card['title']; ?></span>
-                    <h3><?= $card['value']; ?></h3>
+                    <h3><?= number_format((int) $card['value']); ?></h3>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -78,11 +79,11 @@ $hasOrders = isset($orders) && class_exists('mysqli_result') && $orders instance
                 <?php endforeach; ?>
             </div>
 
-            <?php if ($hasOrders): ?>
-                <?php while ($order = mysqli_fetch_assoc($orders)): ?>
-                    <div class="table-row">
+            <?php if (!empty($orders)): ?>
+                <?php foreach ($orders as $order): ?>
+                    <div class="table-row" data-status="<?= strtolower($order['order_status']); ?>" data-date="<?= $order['order_date']; ?>">
                         <div class="order-id">
-                            <a href="#">#ORD-<?= (int) $order['id']; ?></a>
+                            <a href="#"><?= htmlspecialchars($order['order_code']); ?></a>
                         </div>
 
                         <div class="customer">
@@ -93,26 +94,30 @@ $hasOrders = isset($orders) && class_exists('mysqli_result') && $orders instance
                         <div><?= date('M d, Y', strtotime($order['order_date'])); ?></div>
 
                         <div class="product">
-                            <img src="<?= htmlspecialchars($order['product_image']); ?>" alt="">
-                            <span><?= htmlspecialchars($order['product']); ?></span>
+                            <?php if (!empty($order['product_image'])): ?>
+                                <img src="assets/uploads/<?= htmlspecialchars($order['product_image']); ?>" alt="">
+                            <?php else: ?>
+                                <span class="product-placeholder"><i class="ri-image-line"></i></span>
+                            <?php endif; ?>
+                            <span><?= htmlspecialchars($order['product'] ?? 'No product'); ?></span>
                         </div>
 
-                        <div>Rp <?= number_format($order['amount'], 0, ',', '.'); ?></div>
-                        <div><span class="badge-paid"><?= htmlspecialchars($order['payment_status']); ?></span></div>
-                        <div><span class="badge-status"><?= htmlspecialchars($order['order_status']); ?></span></div>
+                        <div>Rp <?= number_format($order['total_amount'], 0, ',', '.'); ?></div>
+                        <div><span class="badge-paid"><?= htmlspecialchars(ucfirst($order['payment_status'])); ?></span></div>
+                        <div><span class="badge-status"><?= htmlspecialchars(ucfirst($order['order_status'])); ?></span></div>
 
                         <div class="actions">
                             <i class="ri-eye-line"></i>
                             <i class="ri-more-2-fill"></i>
                         </div>
                     </div>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             <?php else: ?>
                 <div class="empty-orders">No orders to display.</div>
             <?php endif; ?>
 
             <div class="table-footer">
-                <span class="page-info" data-per-page="<?= $ordersPerPage; ?>">Showing 0 orders</span>
+                <span class="page-info" data-per-page="5">Showing 0 orders</span>
                 <div class="pagination" data-pagination></div>
             </div>
         </div>

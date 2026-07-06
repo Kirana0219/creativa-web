@@ -1,12 +1,15 @@
-:root{
-    --primary:#8650F4;
-    --secondary:#EDE9FF;
-    --background:#F9F9FF;
-    --text:#141B2B;
-    --secondary-text:#777587;
-    --border:#C7C4D8;
-}
+:root {
+    --primary: #8650F4;
+    --primary-dark: #6F3FE0;
+    --secondary-color:#EDE9FF;
+    --background: #F9F9FF;
+    --text: #141B2B;
+    --secondary: #464555;
+    --border: #C7C4D8;
 
+    --white: #FFFFFF;
+    --soft-gray: #F8F9FC;
+}
 *{
     font-family:'Poppins',sans-serif;
 }
