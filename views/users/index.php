@@ -5,9 +5,9 @@ include 'views/layout/sidebar.php';
 
 <div class="content">
 
-    <h2>Product</h2>
+    <h2>Users</h2>
 
-    <p>Halaman Product berhasil dimuat.</p>
+    <p>Halaman Users berhasil dimuat.</p>
 
 </div>
 
