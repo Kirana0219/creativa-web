@@ -4,6 +4,6 @@
             <p class="mb-0">&copy; <?= date('Y') ?> Creativa. All rights reserved.</p>
         </div>
     </footer>
-    <script src="./assets/js/script.js?v=2"></script>
+    <script src="./assets/js/index.js?v=2"></script>
 </body>
 </html>
