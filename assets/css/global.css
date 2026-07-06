@@ -1,0 +1,17 @@
+:root{
+    --primary:#8650F4;
+    --secondary:#EDE9FF;
+    --background:#F9F9FF;
+    --text:#141B2B;
+    --secondary-text:#777587;
+    --border:#C7C4D8;
+}
+
+*{
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    margin:0;
+    background:var(--background);
+}
