@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - Creativa</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="assets/css/auth.css">
 </head>
 
@@ -48,14 +49,22 @@
                 <div class="mb-3">
                     <label class="form-label">Email</label>
                     <div class="input-group">
+                        <span class="input-icon">
+                            <i class="bi bi-envelope"></i>
+                        </span>
                         <input type="email" name="email" class="form-control" required placeholder="Enter your email">
                     </div>
                 </div>
-
                 <div class="mb-3">
-                    <label class="form-label">Password</label>
+                    <label for="password" class="form-label">Password</label>
                     <div class="input-group">
-                        <input type="password" name="password" class="form-control" required placeholder="••••••••">
+                        <span class="input-icon">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
+                        <span class="eye-icon" onclick="togglePassword()">
+                            <i class="bi bi-eye-fill" id="eyeIcon"></i>
+                        </span>
                     </div>
                 </div>
 
@@ -80,5 +89,21 @@
     </div>
 
 </div>
+<script>
+function togglePassword() {
+    const input = document.getElementById("password");
+    const icon = document.getElementById("eyeIcon");
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("bi-eye-fill");
+        icon.classList.add("bi-eye-slash-fill");
+    } else {
+        input.type = "password";
+        icon.classList.remove("bi-eye-slash-fill");
+        icon.classList.add("bi-eye-fill");
+    }
+}
+</script>
 </body>
 </html>

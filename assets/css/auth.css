@@ -47,28 +47,29 @@ body {
 }
 
 /* blur circles */
-.login-left::before {
-    content: "";
-    position: absolute;
-    width: 384px;
-    height: 384px;
-    left: -96px;
-    bottom: -120px;
-    background: rgba(90, 82, 232, 0.30);
-    filter: blur(32px);
-    border-radius: 9999px;
-}
-
+.login-left::before,
 .login-left::after {
     content: "";
     position: absolute;
+    border-radius: 9999px;
+    filter: blur(32px);
+    z-index: 1;
+}
+
+.login-left::before {
     width: 384px;
     height: 384px;
-    right: -120px;
-    top: -120px;
-    background: rgba(129, 140, 248, 0.20);
-    filter: blur(32px);
-    border-radius: 9999px;
+    background: rgba(148, 142, 252, 0.25);
+    right: -96px;
+    top: -96px;
+}
+
+.login-left::after {
+    width: 384px;
+    height: 384px;
+    background: rgba(148, 142, 252, 0.25);
+    left: -120px;
+    bottom: -120px;
 }
 
 .hero-content {
@@ -146,6 +147,7 @@ body {
 
 .input-group {
     position: relative;
+    width: 100%;
 }
 
 /* INPUT STYLE */
@@ -169,6 +171,45 @@ body {
 .form-control:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(134,80,244,0.15);
+}
+
+/* INPUT ICON */
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 10px;
+    color: #6B7280;
+    font-size: 20px;
+    line-height: 1;
+
+    pointer-events: none;
+    z-index: 2;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eye-icon i {
+    font-size: 20px;
+}
+
+.input-group .form-control {
+    padding-left: 44px;
 }
 
 /* ===========================
