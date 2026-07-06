@@ -1,124 +1,107 @@
 -- ============================================
--- CREATIVA - Database Setup
+-- CREATIVA DATABASE (OPTIMIZED VERSION)
 -- ============================================
--- Create database if not exists
-CREATE DATABASE IF NOT EXISTS db_creativa;
+
+CREATE DATABASE IF NOT EXISTS db_creativa
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
 USE db_creativa;
 
 -- ============================================
 -- 1. USERS TABLE
 -- ============================================
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     avatar VARCHAR(255),
-    status ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
+    status ENUM('active', 'inactive', 'pending') DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
     INDEX idx_email (email),
     INDEX idx_status (status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB;
 
 -- ============================================
--- 2. PRODUCTS TABLE
+-- 2. CUSTOMERS TABLE
 -- ============================================
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE customers (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    category VARCHAR(100),
-    price DECIMAL(12, 2) NOT NULL,
-    cost DECIMAL(12, 2),
-    stock INT DEFAULT 0,
-    sku VARCHAR(100) UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_email (email)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- 3. CATEGORIES TABLE
+-- ============================================
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+) ENGINE=InnoDB;
+
+-- ============================================
+-- 4. PRODUCTS TABLE
+-- ============================================
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    category_id INT DEFAULT NULL,
+    price DECIMAL(12,2) NOT NULL DEFAULT 0,
+    stock INT NOT NULL DEFAULT 0,
     image VARCHAR(255),
-    status ENUM('active', 'inactive', 'discontinued') DEFAULT 'active',
+    status ENUM('in_stock','low_stock','out_of_stock') DEFAULT 'in_stock',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+
+    INDEX idx_category (category_id),
     INDEX idx_status (status),
-    INDEX idx_category (category)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    INDEX idx_name (name)
+) ENGINE=InnoDB;
 
 -- ============================================
--- 3. ORDERS TABLE
+-- 5. ORDERS TABLE
 -- ============================================
-CREATE TABLE IF NOT EXISTS orders (
+CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    order_number VARCHAR(50) UNIQUE NOT NULL,
-    user_id INT NOT NULL,
-    customer_name VARCHAR(255),
-    customer_email VARCHAR(255),
-    customer_phone VARCHAR(20),
-    total_amount DECIMAL(12, 2) NOT NULL,
-    payment_status ENUM('pending', 'paid', 'cancelled', 'refunded') DEFAULT 'pending',
-    order_status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
-    notes TEXT,
+    order_code VARCHAR(20) NOT NULL UNIQUE,
+    customer_id INT NOT NULL,
+    order_date DATE NOT NULL,
+    payment_status ENUM('paid','pending','failed') DEFAULT 'pending',
+    status ENUM('pending','shipped','cancelled','delivered') DEFAULT 'pending',
+    total_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_order_number (order_number),
-    INDEX idx_user_id (user_id),
-    INDEX idx_order_status (order_status),
-    INDEX idx_payment_status (payment_status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE,
+
+    INDEX idx_customer (customer_id),
+    INDEX idx_order_code (order_code),
+    INDEX idx_status (status),
+    INDEX idx_payment (payment_status),
+    INDEX idx_date (order_date)
+) ENGINE=InnoDB;
 
 -- ============================================
--- 4. ORDER ITEMS TABLE
+-- 6. ORDER ITEMS TABLE
 -- ============================================
-CREATE TABLE IF NOT EXISTS order_items (
+CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
     product_id INT NOT NULL,
-    product_name VARCHAR(255),
-    quantity INT NOT NULL,
-    price DECIMAL(12, 2) NOT NULL,
-    subtotal DECIMAL(12, 2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    quantity INT NOT NULL DEFAULT 1,
+    price DECIMAL(12,2) NOT NULL,
+
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL,
-    INDEX idx_order_id (order_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================
--- 5. INVENTORY TABLE
--- ============================================
-CREATE TABLE IF NOT EXISTS inventory (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT NOT NULL,
-    quantity_in INT DEFAULT 0,
-    quantity_out INT DEFAULT 0,
-    current_stock INT DEFAULT 0,
-    warehouse_location VARCHAR(100),
-    last_restock_date DATE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_product (product_id),
-    INDEX idx_product_id (product_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ============================================
--- 6. ACTIVITY LOG TABLE
--- ============================================
-CREATE TABLE IF NOT EXISTS activity_logs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    action VARCHAR(100) NOT NULL,
-    entity_type VARCHAR(50),
-    entity_id INT,
-    description TEXT,
-    ip_address VARCHAR(45),
-    user_agent TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-    INDEX idx_user_id (user_id),
-    INDEX idx_created_at (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================
--- DATABASE SETUP COMPLETE
--- ============================================
--- All tables created successfully!
--- Ready to insert data when needed.
+    INDEX idx_order (order_id),
+    INDEX idx_product (product_id)
+) ENGINE=InnoDB;
