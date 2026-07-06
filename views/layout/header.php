@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
     <style>
-        <?= file_get_contents('css/layout.css') ?>
+        <?= file_get_contents('assets/css/layout.css') ?>
     </style>
 </head>
 

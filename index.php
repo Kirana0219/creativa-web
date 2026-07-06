@@ -15,9 +15,9 @@ $action = $_GET['action'] ?? 'index';
 // Router
 switch ($page) {
 
-    // case 'dashboard':
-    //     $controller = new DashboardController();
-    //     break;
+    case 'dashboard':
+        $controller = new DashboardController();
+        break;
 
     case 'products':
         $controller = new ProdukController();
