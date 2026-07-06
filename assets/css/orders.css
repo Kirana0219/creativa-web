@@ -41,22 +41,18 @@
     margin:0;
 }
 
-.btn-export,
-.filter-btn{
+.btn-export{
     display:flex;
     align-items:center;
+    background:var(--primary);
+    border:0;
+    color:#fff;
     gap:8px;
     height:46px;
     border-radius:10px;
     font-weight:500;
-    transition:.25s;
-}
-
-.btn-export{
-    background:var(--primary);
-    border:0;
-    color:#fff;
     padding:0 22px;
+    transition:.25s;
 }
 
 .btn-export:hover{
@@ -183,9 +179,13 @@
 }
 
 .custom-filter{
-    width:140px;
+    width:185px;
     padding:0 12px;
     cursor:pointer;
+    overflow:hidden;
+    text-align:left;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 .date-filter{
@@ -209,16 +209,8 @@
     font-size:18px;
 }
 
-.filter-btn{
-    background:#fff;
-    border:1px solid var(--border);
-    color:var(--text);
-    padding:0 12px;
-}
-
-.filter-btn:hover{
-    background:var(--primary);
-    color:#fff;
+.flatpickr-calendar{
+    z-index:2000;
 }
 
 .orders-table{
@@ -366,8 +358,7 @@
     .summary-cards,
     .search-order,
     .custom-filter,
-    .date-filter,
-    .filter-btn{
+    .date-filter{
         width:100%;
         max-width:none;
     }

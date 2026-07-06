@@ -19,17 +19,6 @@
     z-index:999;
 }
 
-/* .page-title h3{
-    margin:0;
-    font-size:24px;
-    font-weight:600;
-    color:var(--text);
-} */
-
-/* .page-title small{
-    color:var(--secondary-text);
-} */ 
-
 .header-right{
     display:flex;
     align-items:center;

@@ -1,40 +1,54 @@
-// Orders Filter
-flatpickr("#dateRange", {
-    mode: "range",
-    dateFormat: "M d, Y",
+document.addEventListener("DOMContentLoaded", () => {
+    const dateInput = document.querySelector("#dateRange");
+    const dateFilter = document.querySelector(".date-filter");
 
-    onClose: function(selectedDates, dateStr, instance) {
-        if (selectedDates.length === 2) {
+    if (dateInput && typeof flatpickr === "function") {
+        const calendar = flatpickr(dateInput, {
+            mode: "range",
+            dateFormat: "M d, Y",
+            disableMobile: true,
+            clickOpens: true,
+            onClose(selectedDates, dateStr, instance) {
+                if (selectedDates.length !== 2) {
+                    return;
+                }
 
-            const start = selectedDates[0];
-            const end = selectedDates[1];
+                const startText = selectedDates[0].toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "2-digit"
+                });
 
-            const startText = start.toLocaleDateString('en-US', {
-                month: 'short',
-                day: '2-digit'
-            });
+                const endText = selectedDates[1].toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric"
+                });
 
-            const endText = end.toLocaleDateString('en-US', {
-                month: 'short',
-                day: '2-digit',
-                year: 'numeric'
-            });
-            instance.input.value = `${startText} - ${endText}`;
-        }
+                instance.input.value = `${startText} - ${endText}`;
+            }
+        });
+
+        dateFilter?.addEventListener("click", () => calendar.open());
     }
-});
 
-document.querySelectorAll(".dropdown-item").forEach(item=>{
-    item.addEventListener("click",function(){
-        document.querySelector(".dropdown-toggle").innerHTML=this.innerText;
+    document.querySelectorAll(".dropdown-item").forEach(item => {
+        item.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            this.closest(".dropdown")
+                ?.querySelector(".dropdown-toggle")
+                ?.replaceChildren(`Status: ${this.textContent.trim()}`);
+        });
     });
-});
 
-const orderRows = [...document.querySelectorAll(".orders-table .table-row")];
-const pageInfo = document.querySelector(".page-info");
-const pagination = document.querySelector("[data-pagination]");
+    const orderRows = [...document.querySelectorAll(".orders-table .table-row")];
+    const pageInfo = document.querySelector(".page-info");
+    const pagination = document.querySelector("[data-pagination]");
 
-if (pageInfo && pagination) {
+    if (!pageInfo || !pagination) {
+        return;
+    }
+
     const perPage = Number(pageInfo.dataset.perPage) || 10;
     let currentPage = 1;
 
@@ -54,27 +68,6 @@ if (pageInfo && pagination) {
         }
 
         return [1, "...", currentPage, "...", totalPages];
-    };
-
-    const showPage = (page) => {
-        const totalPages = getTotalPages();
-        currentPage = Math.min(Math.max(page, 1), totalPages);
-
-        const start = (currentPage - 1) * perPage;
-        const end = start + perPage;
-
-        orderRows.forEach((row, index) => {
-            row.hidden = index < start || index >= end;
-        });
-
-        if (!orderRows.length) {
-            pageInfo.textContent = "Showing 0 orders";
-            pagination.innerHTML = "";
-            return;
-        }
-
-        pageInfo.textContent = `Showing ${start + 1} to ${Math.min(end, orderRows.length)} of ${orderRows.length} orders`;
-        renderPagination(totalPages);
     };
 
     const createButton = (label, page, isActive = false, isDisabled = false) => {
@@ -106,5 +99,26 @@ if (pageInfo && pagination) {
         pagination.append(createButton("Next", currentPage + 1, false, currentPage === totalPages));
     };
 
+    const showPage = (page) => {
+        const totalPages = getTotalPages();
+        currentPage = Math.min(Math.max(page, 1), totalPages);
+
+        const start = (currentPage - 1) * perPage;
+        const end = start + perPage;
+
+        orderRows.forEach((row, index) => {
+            row.hidden = index < start || index >= end;
+        });
+
+        if (!orderRows.length) {
+            pageInfo.textContent = "Showing 0 orders";
+            pagination.innerHTML = "";
+            return;
+        }
+
+        pageInfo.textContent = `Showing ${start + 1} to ${Math.min(end, orderRows.length)} of ${orderRows.length} orders`;
+        renderPagination(totalPages);
+    };
+
     showPage(1);
-}
+});

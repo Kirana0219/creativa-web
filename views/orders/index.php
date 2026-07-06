@@ -68,11 +68,6 @@ $hasOrders = isset($orders) && class_exists('mysqli_result') && $orders instance
                     <i class="ri-calendar-line"></i>
                     <input id="dateRange" type="text" placeholder="Select Date" readonly>
                 </label>
-
-                <button class="filter-btn">
-                    <i class="ri-filter-3-line"></i>
-                    More Filters
-                </button>
             </div>
         </div>
 
