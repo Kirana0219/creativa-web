@@ -81,10 +81,10 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
             <h1>Product Catalog</h1>
             <p>Manage your stock, prices, and product visibility from one place.</p>
         </div>
-        <a href="index.php?page=products&action=create" class="btn-add-product">
+        <button type="button" class="btn-add-product" onclick="openAddProductModal()">
             <i class="ri-add-line icon-lg"></i>
             <span>Add Product</span>
-        </a>
+        </button>
     </div>
 
     <!-- Stats Row -->
@@ -95,8 +95,8 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
                 <i class="ri-shopping-bag-3-line"></i>
             </div>
             <div class="stat-details">
-                <span class="stat-label">Total Products</span>
-                <span class="stat-value"><?= number_format($stats['total_products'] ?? 0) ?></span>
+                <div class="stat-label">Total Products</div>
+                <div class="stat-value"><?= number_format($stats['total_products'] ?? 0) ?></div>
             </div>
         </div>
 
@@ -174,10 +174,9 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
         <table class="product-table">
             <thead>
                 <tr>
-                    <th class="checkbox-col">
-                        <input type="checkbox" class="checkbox-custom" onclick="toggleAllCheckboxes(this)">
-                    </th>
+                    <th class="number-col">No</th>
                     <th>Product</th>
+                    <th>SKU</th>
                     <th>Category</th>
                     <th>Price</th>
                     <th>Stock</th>
@@ -188,16 +187,38 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
             <tbody>
                 <?php if (empty($products)): ?>
                     <tr>
-                        <td colspan="7" class="empty-state-cell">
+                        <td colspan="8" class="empty-state-cell">
                             <i class="ri-inbox-line empty-state-icon"></i>
                             Belum ada produk. Silakan tambahkan produk baru!
                         </td>
                     </tr>
                 <?php else: ?>
-                    <?php foreach ($products as $p): ?>
+                    <?php foreach ($products as $index => $p): ?>
+                        <?php
+                            $summaryData = [
+                                'name' => $p['name'] ?? '-',
+                                'sku' => $p['sku'] ?? '-',
+                                'category' => $p['category_name'] ?? 'Uncategorized',
+                                'price' => formatRupiah($p['price'] ?? 0),
+                                'stock' => number_format($p['stock'] ?? 0) . ' units',
+                                'status' => ($p['status'] ?? '') == 'in_stock' ? 'In Stock' : (($p['status'] ?? '') == 'low_stock' ? 'Low Stock' : 'Out of Stock'),
+                                'image' => !empty($p['image']) ? 'assets/uploads/' . $p['image'] : '',
+                                'created_at' => !empty($p['created_at']) ? date('M d, Y', strtotime($p['created_at'])) : '-',
+                                'updated_at' => !empty($p['updated_at']) ? date('M d, Y', strtotime($p['updated_at'])) : '-',
+                            ];
+                            $editData = [
+                                'id' => $p['id'] ?? '',
+                                'name' => $p['name'] ?? '',
+                                'sku' => $p['sku'] ?? '',
+                                'category_id' => (string) ($p['category_id'] ?? ''),
+                                'price' => $p['price'] ?? 0,
+                                'stock' => $p['stock'] ?? 0,
+                                'image' => !empty($p['image']) ? 'assets/uploads/' . $p['image'] : '',
+                            ];
+                        ?>
                         <tr>
-                            <td>
-                                <input type="checkbox" class="checkbox-custom row-checkbox">
+                            <td class="number-col">
+                                <?= $offset + $index + 1 ?>
                             </td>
                             <td>
                                 <div class="product-info-cell">
@@ -208,10 +229,17 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
                                             <i class="ri-image-line"></i>
                                         </div>
                                     <?php endif; ?>
-                                    <a href="index.php?page=products&action=edit&id=<?= $p['id'] ?>" class="product-name-text">
+                                    <button
+                                        type="button"
+                                        class="product-name-text product-name-button"
+                                        data-product='<?= htmlspecialchars(json_encode($editData), ENT_QUOTES, 'UTF-8') ?>'
+                                        onclick="openEditProductModal(this)">
                                         <?= htmlspecialchars($p['name']) ?>
-                                    </a>
+                                    </button>
                                 </div>
+                            </td>
+                            <td>
+                                <span class="sku-text"><?= htmlspecialchars($p['sku'] ?? '-') ?></span>
                             </td>
                             <td>
                                 <?= htmlspecialchars($p['category_name'] ?? 'Uncategorized') ?>
@@ -229,9 +257,22 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
                             </td>
                             <td class="col-actions">
                                 <div class="action-buttons action-buttons-right">
-                                    <a href="index.php?page=products&action=edit&id=<?= $p['id'] ?>" class="btn-action-icon" title="Edit">
+                                    <button
+                                        type="button"
+                                        class="btn-action-icon"
+                                        title="View Summary"
+                                        data-product='<?= htmlspecialchars(json_encode($summaryData), ENT_QUOTES, 'UTF-8') ?>'
+                                        onclick="openProductSummary(this)">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn-action-icon"
+                                        title="Edit"
+                                        data-product='<?= htmlspecialchars(json_encode($editData), ENT_QUOTES, 'UTF-8') ?>'
+                                        onclick="openEditProductModal(this)">
                                         <i class="ri-pencil-line"></i>
-                                    </a>
+                                    </button>
                                     <a href="index.php?page=products&action=delete&id=<?= $p['id'] ?>" class="btn-action-icon btn-action-delete" title="Delete" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
                                         <i class="ri-delete-bin-line"></i>
                                     </a>
@@ -301,6 +342,182 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
     </div>
 </div>
 
+<!-- Edit Product Modal -->
+<div class="filter-modal-backdrop" id="editProductModal">
+    <div class="filter-modal product-form-modal">
+        <div class="filter-modal-header">
+            <h5>Edit Product</h5>
+            <button type="button" class="filter-modal-close" onclick="closeEditProductModal()">&times;</button>
+        </div>
+
+        <form action="index.php?page=products&action=update" method="POST" enctype="multipart/form-data">
+            <input type="hidden" id="edit_id" name="id">
+
+            <div class="filter-modal-body">
+                <div class="form-group full-width">
+                    <label for="edit_name">Product Name</label>
+                    <input type="text" id="edit_name" name="name" class="form-input-custom" required>
+                </div>
+
+                <div class="form-row modal-form-row">
+                    <div class="form-group">
+                        <label for="edit_category_id">Category</label>
+                        <select id="edit_category_id" name="category_id" class="form-input-custom">
+                            <option value="">Select Category</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?= $cat['id'] ?>" data-prefix="<?= htmlspecialchars($cat['sku_prefix'] ?? '') ?>">
+                                    <?= htmlspecialchars($cat['name']) ?><?= !empty($cat['sku_prefix']) ? ' (' . htmlspecialchars($cat['sku_prefix']) . ')' : '' ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit_sku_preview">SKU yang diedit</label>
+                        <input type="text" id="edit_sku_preview" class="form-input-custom sku-preview-input" readonly>
+                        <span class="sku-edit-note" id="edit_sku_note"></span>
+                    </div>
+                </div>
+
+                <div class="form-row modal-form-row">
+                    <div class="form-group">
+                        <label for="edit_price">Price (IDR)</label>
+                        <input type="number" id="edit_price" name="price" class="form-input-custom" required min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit_stock">Current Stock</label>
+                        <input type="number" id="edit_stock" name="stock" class="form-input-custom" required min="0">
+                    </div>
+                </div>
+
+                <div class="form-group tight">
+                    <label for="edit_image">Product Image</label>
+                    <input type="file" id="edit_image" name="image" class="form-input-custom" accept="image/*">
+                    <div class="image-preview-container" id="edit_image_preview_wrap">
+                        <img src="" class="image-preview" id="edit_image_preview" alt="Current Image">
+                        <span class="current-image-text">Current image</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-modal-footer">
+                <button type="button" class="btn-filter-reset" onclick="closeEditProductModal()">Cancel</button>
+                <button type="submit" class="btn-filter-apply">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add Product Modal -->
+<div class="filter-modal-backdrop" id="addProductModal">
+    <div class="filter-modal product-form-modal">
+        <div class="filter-modal-header">
+            <h5>Add Product</h5>
+            <button type="button" class="filter-modal-close" onclick="closeAddProductModal()">&times;</button>
+        </div>
+
+        <form action="index.php?page=products&action=store" method="POST" enctype="multipart/form-data">
+            <div class="filter-modal-body">
+                <div class="form-group full-width">
+                    <label for="modal_name">Product Name</label>
+                    <input type="text" id="modal_name" name="name" class="form-input-custom" required placeholder="e.g. Premium Arabica Coffee">
+                </div>
+
+                <div class="form-row modal-form-row">
+                    <div class="form-group">
+                        <label for="modal_category_id">Category</label>
+                        <select id="modal_category_id" name="category_id" class="form-input-custom">
+                            <option value="">Select Category</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?= $cat['id'] ?>" data-prefix="<?= htmlspecialchars($cat['sku_prefix'] ?? '') ?>">
+                                    <?= htmlspecialchars($cat['name']) ?><?= !empty($cat['sku_prefix']) ? ' (' . htmlspecialchars($cat['sku_prefix']) . ')' : '' ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modal_sku_preview">SKU</label>
+                        <input type="text" id="modal_sku_preview" class="form-input-custom sku-preview-input" value="PRD-0001+" readonly>
+                    </div>
+                </div>
+
+                <div class="form-row modal-form-row">
+                    <div class="form-group">
+                        <label for="modal_price">Price (IDR)</label>
+                        <input type="number" id="modal_price" name="price" class="form-input-custom" required min="0" placeholder="e.g. 85000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modal_stock">Initial Stock</label>
+                        <input type="number" id="modal_stock" name="stock" class="form-input-custom" required min="0" placeholder="e.g. 100">
+                    </div>
+                </div>
+
+                <div class="form-group tight">
+                    <label for="modal_image">Product Image</label>
+                    <input type="file" id="modal_image" name="image" class="form-input-custom" accept="image/*">
+                </div>
+            </div>
+
+            <div class="filter-modal-footer">
+                <button type="button" class="btn-filter-reset" onclick="closeAddProductModal()">Cancel</button>
+                <button type="submit" class="btn-filter-apply">Save Product</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Product Summary Modal -->
+<div class="filter-modal-backdrop" id="productSummaryModal">
+    <div class="filter-modal product-summary-modal">
+        <div class="filter-modal-header">
+            <h5>Product Summary</h5>
+            <button type="button" class="filter-modal-close" onclick="closeProductSummary()">&times;</button>
+        </div>
+
+        <div class="filter-modal-body">
+            <div class="summary-product-head">
+                <div class="summary-image" id="summaryImage">
+                    <i class="ri-image-line"></i>
+                </div>
+                <div>
+                    <h3 id="summaryName">-</h3>
+                    <span class="sku-text" id="summarySku">-</span>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span>Category</span>
+                    <strong id="summaryCategory">-</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Price</span>
+                    <strong id="summaryPrice">-</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Stock</span>
+                    <strong id="summaryStock">-</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Status</span>
+                    <strong id="summaryStatus">-</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Created</span>
+                    <strong id="summaryCreated">-</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Updated</span>
+                    <strong id="summaryUpdated">-</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Filter Modal Backdrop -->
 <div class="filter-modal-backdrop" id="filterModal">
     <div class="filter-modal">
@@ -316,8 +533,8 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
 
             <div class="filter-modal-body">
                 <div class="filter-form-group">
-                    <label>Search Name</label>
-                    <input type="text" name="search" class="filter-input" placeholder="Search by product name..." value="<?= htmlspecialchars($search) ?>">
+                    <label>Search Product</label>
+                    <input type="text" name="search" class="filter-input" placeholder="Search name, SKU, or category..." value="<?= htmlspecialchars($search) ?>">
                 </div>
 
                 <div class="filter-form-group">
@@ -326,7 +543,7 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
                         <option value="">All Categories</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?= $cat['id'] ?>" <?= $categoryId == $cat['id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($cat['name']) ?>
+                                <?= htmlspecialchars($cat['name']) ?><?= !empty($cat['sku_prefix']) ? ' (' . htmlspecialchars($cat['sku_prefix']) . ')' : '' ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -341,12 +558,6 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
 </div>
 
 <script>
-    // Toggle checkboxes
-    function toggleAllCheckboxes(source) {
-        const checkboxes = document.querySelectorAll('.row-checkbox');
-        checkboxes.forEach(cb => cb.checked = source.checked);
-    }
-
     // Modal Control
     function openFilterModal() {
         document.getElementById('filterModal').classList.add('is-open');
@@ -358,10 +569,112 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
 
     // Modal click-outside close
     window.onclick = function(event) {
-        const modal = document.getElementById('filterModal');
-        if (event.target == modal) {
-            modal.classList.remove('is-open');
+        const modals = ['filterModal', 'addProductModal', 'editProductModal', 'productSummaryModal'];
+        modals.forEach(function(modalId) {
+            const modal = document.getElementById(modalId);
+            if (event.target === modal) {
+                modal.classList.remove('is-open');
+            }
+        });
+    }
+
+    function openAddProductModal() {
+        document.getElementById('addProductModal').classList.add('is-open');
+    }
+
+    function closeAddProductModal() {
+        document.getElementById('addProductModal').classList.remove('is-open');
+    }
+
+    let editOriginalCategoryId = '';
+    let editOriginalSku = '';
+
+    function openEditProductModal(button) {
+        const product = JSON.parse(button.dataset.product);
+
+        editOriginalCategoryId = product.category_id || '';
+        editOriginalSku = product.sku || '';
+
+        document.getElementById('edit_id').value = product.id;
+        document.getElementById('edit_name').value = product.name;
+        document.getElementById('edit_category_id').value = editOriginalCategoryId;
+        document.getElementById('edit_price').value = parseInt(product.price, 10) || 0;
+        document.getElementById('edit_stock').value = parseInt(product.stock, 10) || 0;
+        document.getElementById('edit_image').value = '';
+
+        const imageWrap = document.getElementById('edit_image_preview_wrap');
+        const imagePreview = document.getElementById('edit_image_preview');
+        if (product.image) {
+            imagePreview.src = product.image;
+            imageWrap.style.display = 'flex';
+        } else {
+            imagePreview.src = '';
+            imageWrap.style.display = 'none';
         }
+
+        updateEditSkuPreview();
+        document.getElementById('editProductModal').classList.add('is-open');
+    }
+
+    function closeEditProductModal() {
+        document.getElementById('editProductModal').classList.remove('is-open');
+    }
+
+    function updateModalSkuPreview() {
+        const categorySelect = document.getElementById('modal_category_id');
+        const skuPreview = document.getElementById('modal_sku_preview');
+        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+        const prefix = selectedOption ? selectedOption.dataset.prefix : '';
+
+        skuPreview.value = prefix ? prefix + '-0001+' : 'PRD-0001+';
+    }
+
+    document.getElementById('modal_category_id').addEventListener('change', updateModalSkuPreview);
+    updateModalSkuPreview();
+
+    function updateEditSkuPreview() {
+        const categorySelect = document.getElementById('edit_category_id');
+        const skuPreview = document.getElementById('edit_sku_preview');
+        const skuNote = document.getElementById('edit_sku_note');
+        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+        const prefix = selectedOption ? selectedOption.dataset.prefix : '';
+
+        if (categorySelect.value === editOriginalCategoryId && editOriginalSku !== '') {
+            skuPreview.value = editOriginalSku;
+            skuNote.textContent = 'SKU saat ini untuk produk ini.';
+            return;
+        }
+
+        skuPreview.value = prefix ? prefix + '-0001+' : 'PRD-0001+';
+        skuNote.textContent = 'Kategori berubah, SKU akan ikut kategori yang dipilih setelah disimpan.';
+    }
+
+    document.getElementById('edit_category_id').addEventListener('change', updateEditSkuPreview);
+
+    function openProductSummary(button) {
+        const product = JSON.parse(button.dataset.product);
+        const summaryImage = document.getElementById('summaryImage');
+
+        document.getElementById('summaryName').textContent = product.name;
+        document.getElementById('summarySku').textContent = product.sku;
+        document.getElementById('summaryCategory').textContent = product.category;
+        document.getElementById('summaryPrice').textContent = product.price;
+        document.getElementById('summaryStock').textContent = product.stock;
+        document.getElementById('summaryStatus').textContent = product.status;
+        document.getElementById('summaryCreated').textContent = product.created_at;
+        document.getElementById('summaryUpdated').textContent = product.updated_at;
+
+        if (product.image) {
+            summaryImage.innerHTML = '<img src="' + product.image + '" alt="">';
+        } else {
+            summaryImage.innerHTML = '<i class="ri-image-line"></i>';
+        }
+
+        document.getElementById('productSummaryModal').classList.add('is-open');
+    }
+
+    function closeProductSummary() {
+        document.getElementById('productSummaryModal').classList.remove('is-open');
     }
 
     // Reset all filters in modal

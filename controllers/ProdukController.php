@@ -95,7 +95,7 @@ class ProdukController {
 
         if (empty($name)) {
             $_SESSION['error'] = 'Nama produk wajib diisi!';
-            header('Location: index.php?page=products&action=create');
+            header('Location: index.php?page=products');
             exit;
         }
 
@@ -180,7 +180,7 @@ class ProdukController {
 
         if (!$id || empty($name)) {
             $_SESSION['error'] = 'ID dan Nama produk wajib diisi!';
-            header("Location: index.php?page=products&action=edit&id=$id");
+            header('Location: index.php?page=products');
             exit;
         }
 

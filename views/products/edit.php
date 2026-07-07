@@ -6,6 +6,7 @@ $product = $product ?? [
     'category_id' => '',
     'price' => 0,
     'stock' => 0,
+    'sku' => '',
     'image' => null,
 ];
 $categories = $categories ?? [];
@@ -53,8 +54,9 @@ include 'views/layout/sidebar.php';
                             <?php foreach ($categories as $cat): ?>
                                 <option
                                     value="<?= $cat['id'] ?>"
+                                    data-prefix="<?= htmlspecialchars($cat['sku_prefix'] ?? '') ?>"
                                     <?= $product['category_id'] == $cat['id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($cat['name']) ?>
+                                    <?= htmlspecialchars($cat['name']) ?><?= !empty($cat['sku_prefix']) ? ' (' . htmlspecialchars($cat['sku_prefix']) . ')' : '' ?>
                                 </option>
                             <?php endforeach; ?>
 
@@ -96,6 +98,17 @@ include 'views/layout/sidebar.php';
             </div>
 
             <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="sku_preview">SKU</label>
+
+                    <input
+                        type="text"
+                        id="sku_preview"
+                        class="form-input-custom sku-preview-input"
+                        readonly
+                        value="<?= htmlspecialchars($product['sku'] ?: 'Auto-generated after save') ?>">
+                </div>
+
                 <div class="form-group">
                     <label for="price">Price (IDR)</label>
 
@@ -199,6 +212,25 @@ function openCatModal() {
 function closeCatModal() {
     document.getElementById('catModal').classList.remove('is-open');
 }
+
+function updateSkuPreview() {
+    const categorySelect = document.getElementById('category_id');
+    const skuPreview = document.getElementById('sku_preview');
+    const originalCategoryId = <?= json_encode((string) ($product['category_id'] ?? '')) ?>;
+    const currentSku = <?= json_encode((string) ($product['sku'] ?? '')) ?>;
+    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+    const prefix = selectedOption ? selectedOption.dataset.prefix : '';
+
+    if (categorySelect.value === originalCategoryId && currentSku !== '') {
+        skuPreview.value = currentSku;
+        return;
+    }
+
+    skuPreview.value = prefix ? prefix + '-0001+' : 'PRD-0001+';
+}
+
+document.getElementById('category_id').addEventListener('change', updateSkuPreview);
+updateSkuPreview();
 
 window.addEventListener('click', function (event) {
     const modal = document.getElementById('catModal');

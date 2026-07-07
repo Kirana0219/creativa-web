@@ -45,6 +45,18 @@ CREATE TABLE categories (
     name VARCHAR(100) NOT NULL
 ) ENGINE=InnoDB;
 
+
+ALTER TABLE categories
+ADD COLUMN sku_prefix VARCHAR(20) UNIQUE AFTER id;
+
+INSERT INTO categories (name, sku_prefix) VALUES
+('Beverages', 'BEV'),
+('Home Decor', 'DEC'),
+('Lifestyle', 'LFS'),
+('Fashion', 'FSH'),
+('Snacks', 'SNK'),
+('Stationery', 'STA');
+
 -- ============================================
 -- 4. PRODUCTS TABLE
 -- ============================================
@@ -65,6 +77,16 @@ CREATE TABLE products (
     INDEX idx_status (status),
     INDEX idx_name (name)
 ) ENGINE=InnoDB;
+
+ALTER TABLE products
+ADD COLUMN sku VARCHAR(20) UNIQUE AFTER id;
+
+UPDATE categories SET sku_prefix='BEV' WHERE id=1;
+UPDATE categories SET sku_prefix='DEC' WHERE id=2;
+UPDATE categories SET sku_prefix='LFS' WHERE id=3;
+UPDATE categories SET sku_prefix='FSH' WHERE id=4;
+UPDATE categories SET sku_prefix='SNK' WHERE id=5;
+UPDATE categories SET sku_prefix='STA' WHERE id=6;
 
 -- ============================================
 -- 5. ORDERS TABLE

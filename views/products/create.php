@@ -29,7 +29,9 @@ include 'views/layout/sidebar.php';
                         <select id="category_id" name="category_id" class="form-input-custom">
                             <option value="">Select Category</option>
                             <?php foreach ($categories as $cat): ?>
-                                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                                <option value="<?= $cat['id'] ?>" data-prefix="<?= htmlspecialchars($cat['sku_prefix'] ?? '') ?>">
+                                    <?= htmlspecialchars($cat['name']) ?><?= !empty($cat['sku_prefix']) ? ' (' . htmlspecialchars($cat['sku_prefix']) . ')' : '' ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                         <button type="button" class="btn-quick-add" onclick="openCatModal()" title="Add New Category">
@@ -45,6 +47,11 @@ include 'views/layout/sidebar.php';
             </div>
 
             <div class="form-row">
+                <div class="form-group full-width">
+                    <label for="sku_preview">SKU</label>
+                    <input type="text" id="sku_preview" class="form-input-custom sku-preview-input" value="Auto-generated after save" readonly>
+                </div>
+
                 <div class="form-group">
                     <label for="price">Price (IDR)</label>
                     <input type="number" id="price" name="price" class="form-input-custom" required min="0" placeholder="e.g. 85000">
@@ -94,6 +101,18 @@ include 'views/layout/sidebar.php';
     function closeCatModal() {
         document.getElementById('catModal').classList.remove('is-open');
     }
+
+    function updateSkuPreview() {
+        const categorySelect = document.getElementById('category_id');
+        const skuPreview = document.getElementById('sku_preview');
+        const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+        const prefix = selectedOption ? selectedOption.dataset.prefix : '';
+
+        skuPreview.value = prefix ? prefix + '-0001+' : 'PRD-0001+';
+    }
+
+    document.getElementById('category_id').addEventListener('change', updateSkuPreview);
+    updateSkuPreview();
 
     // Modal click-outside close
     window.onclick = function(event) {

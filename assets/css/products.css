@@ -6,9 +6,8 @@
     --secondary-text: #777587;
     --border: #C7C4D8;
 
-    /* Turunan dari --primary, dipakai untuk state hover & efek transparan (rgba) */
     --primary-hover: #6F3FE0;
-    --primary-rgb: 134, 80, 244; /* nilai RGB dari #8650F4, dipakai lewat rgba(var(--primary-rgb), alpha) */
+    --primary-rgb: 134, 80, 244;
 }
 
 /* Premium Catalog Page Styling */
@@ -52,6 +51,7 @@
     align-items: center;
     gap: 8px;
     text-decoration: none;
+    cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
 }
@@ -79,8 +79,9 @@
 .stat-card {
     background: #FFFFFF;
     border-radius: 16px;
-    padding: 20px;
+    padding: 22px;
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
     gap: 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.01);
@@ -98,30 +99,31 @@
     flex-shrink: 0;
 }
 
+/* ==== Disamakan dengan warna icon di halaman Orders (.purple/.orange/.green/.red) ==== */
 .icon-total {
-    background: rgba(var(--primary-rgb), 0.08);
+    background: var(--secondary);
     color: var(--primary);
 }
 
 .icon-low {
-    background: rgba(239, 68, 68, 0.08);
+    background: #FDECEC;
     color: #EF4444;
 }
 
 .icon-value {
-    background: rgba(16, 185, 129, 0.08);
-    color: #10B981;
+    background: #EAFBF2;
+    color: #16A34A;
 }
 
 .icon-categories {
-    background: rgba(59, 130, 246, 0.08);
-    color: #3B82F6;
+    background: #FFEDD5;
+    color: #EA580C;
 }
 
 .stat-details {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
 .stat-label {
@@ -133,7 +135,7 @@
 }
 
 .stat-value {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--text);
 }
@@ -221,8 +223,8 @@
 }
 
 .product-table th {
-    background: #FDFDFD;
-    font-size: 12px;
+    background: var(--secondary);
+    font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
     color: var(--secondary-text);
@@ -233,11 +235,12 @@
 }
 
 .product-table td {
-    padding: 16px 24px;
-    font-size: 15px;
-    color: #464555;
-    border-bottom: 1px solid #ECECEC;
+    padding: 16px 18px;
+    font-size: 14px;
+    color: var(--text);
+    border-top: 1px solid var(--border);
     vertical-align: middle;
+    border-bottom: 1px solid #ECECEC;
 }
 
 .product-table tbody tr:hover {
@@ -247,6 +250,13 @@
 /* Checkbox Styling */
 .checkbox-col {
     width: 48px;
+}
+
+.number-col {
+    width: 64px;
+    text-align: center;
+    color: var(--secondary-text);
+    font-weight: 700;
 }
 
 .checkbox-custom {
@@ -290,8 +300,29 @@
     text-decoration: none;
 }
 
+.product-name-button {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+}
+
 .product-name-text:hover {
     color: var(--primary);
+}
+
+.sku-text {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 8px;
+    background: #F3F3F9;
+    color: #464555;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 6px 10px;
+    white-space: nowrap;
 }
 
 .price-text {
@@ -323,44 +354,49 @@
     display: inline-block;
 }
 
+/* ==== Disamakan dengan warna badge di halaman Orders (.success/.warning/.danger) ====
+   in_stock     -> hijau (sama seperti badge-paid "success" di Orders)
+   low_stock    -> oranye (sama seperti "warning" di Orders)
+   out_of_stock -> merah (sama seperti "danger" di Orders)
+*/
 .badge-in_stock {
-    background: #E8F8F0;
-    color: #10B981;
+    background: #DCFCE7;
+    color: #16A34A;
 }
 .badge-in_stock::before {
-    background: #10B981;
+    background: #16A34A;
 }
 
 .badge-low_stock {
-    background: #FFF1F2;
-    color: #F43F5E;
+    background: #FFF3D6;
+    color: #EA580C;
 }
 .badge-low_stock::before {
-    background: #F43F5E;
+    background: #EA580C;
 }
 
 .badge-out_of_stock {
-    background: #F3F4F6;
-    color: #6B7280;
+    background: #FDECEC;
+    color: #EF4444;
 }
 .badge-out_of_stock::before {
-    background: #6B7280;
+    background: #EF4444;
 }
 
 /* Action Buttons */
 .action-buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
 }
 
 /* Right-aligned action buttons (Actions column) */
 .action-buttons-right {
-    justify-content: flex-end;
+    justify-content: center;
 }
 
 .btn-action-icon {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -368,6 +404,7 @@
     border: none;
     background: transparent;
     color: var(--secondary-text);
+    font-size: 18px;
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s;
@@ -405,8 +442,10 @@
 
 /* Actions column alignment */
 .col-actions {
-    text-align: right;
-    padding-right: 32px;
+    text-align: center;
+    padding-left: 16px;
+    padding-right: 16px;
+    width: 168px;
 }
 
 /* Pagination container */
@@ -508,8 +547,17 @@
     background: #FFFFFF;
     border-radius: 16px;
     width: 440px;
+    max-height: calc(100vh - 48px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
+    overflow: auto;
+}
+
+.product-form-modal {
+    width: min(760px, calc(100vw - 32px));
+}
+
+.product-summary-modal {
+    width: min(560px, calc(100vw - 32px));
 }
 
 .filter-modal-header {
@@ -537,6 +585,75 @@
 
 .filter-modal-body {
     padding: 24px;
+}
+
+.modal-form-row {
+    margin-bottom: 0;
+}
+
+.summary-product-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-product-head h3 {
+    margin: 0 0 8px 0;
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.summary-image {
+    width: 76px;
+    height: 76px;
+    border-radius: 12px;
+    background: #F3F3F9;
+    border: 1px solid #ECECEC;
+    color: var(--secondary-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.summary-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.summary-item {
+    border: 1px solid #ECECEC;
+    border-radius: 10px;
+    padding: 14px;
+    background: #FDFDFD;
+}
+
+.summary-item span {
+    display: block;
+    color: var(--secondary-text);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+}
+
+.summary-item strong {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 700;
+    word-break: break-word;
 }
 
 .filter-form-group {
@@ -614,7 +731,7 @@
     }
 
     .product-table {
-        min-width: 880px;
+        min-width: 980px;
     }
 
     .table-toolbar,
@@ -666,6 +783,10 @@
 
     .filter-modal {
         margin: 16px;
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -746,6 +867,14 @@
     box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.12);
 }
 
+.sku-preview-input[readonly] {
+    background: #F3F3F9;
+    color: #464555;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    cursor: default;
+}
+
 .category-select-group {
     display: flex;
     gap: 12px;
@@ -786,11 +915,19 @@
     background: #F3F3F9;
 }
 
-/* Small caption next to the current image preview on Edit Product */
 .current-image-text {
     font-size: 13px;
     color: var(--secondary-text);
     font-weight: 500;
+}
+
+.sku-edit-note {
+    display: block;
+    margin-top: 6px;
+    color: var(--secondary-text);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .form-actions {
@@ -838,7 +975,6 @@
     box-shadow: 0 6px 16px rgba(var(--primary-rgb), 0.3);
 }
 
-/* Modal Styling for Quick Category Add */
 .cat-modal-backdrop {
     display: none;
     position: fixed;
@@ -852,7 +988,6 @@
     justify-content: center;
 }
 
-/* Shown via JS: classList.add('is-open') -- kept consistent with .filter-modal-backdrop */
 .cat-modal-backdrop.is-open {
     display: flex;
 }

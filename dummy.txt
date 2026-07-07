@@ -8,6 +8,31 @@
 
 USE db_creativa;
 
+ PAKE INI YUN 
+ 
+-- ============================================
+-- ORDERS (2 data)
+-- ============================================
+INSERT INTO orders (order_code, customer_id, order_date, payment_status, status, total_amount) VALUES
+('ORD-2801', 1, '2026-07-01', 'paid', 'shipped', 40000.00),
+('ORD-2802', 2, '2026-07-03', 'paid', 'delivered', 30000.00);
+ 
+-- ============================================
+-- ORDER ITEMS (2 data, terhubung otomatis lewat order_code & sku)
+-- ============================================
+INSERT INTO order_items (order_id, product_id, quantity, price)
+SELECT o.id, p.id, v.qty, v.price
+FROM (
+    SELECT 'ORD-2801' AS order_code, 'BEV-0001' AS sku, 1 AS qty, 40000.00 AS price
+    UNION ALL SELECT 'ORD-2802', 'BEV-0002', 1, 30000.00
+) AS v
+JOIN orders o   ON o.order_code = v.order_code
+JOIN products p ON p.sku = v.sku;
+
+
+
+
+
 -- ---------------------------------------------------------
 -- 1. CATEGORIES (6 kategori)
 -- ---------------------------------------------------------
