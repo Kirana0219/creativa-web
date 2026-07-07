@@ -243,3 +243,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showPage(1);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const deleteModal = document.getElementById('deleteConfirmModal');
+
+    if (!deleteModal) return;
+
+    const confirmDeleteButton =
+        document.getElementById('confirmDeleteButton');
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+
+        const button = event.relatedTarget;
+
+        const url = button.getAttribute('data-delete-url');
+
+        confirmDeleteButton.href = url;
+
+    });
+
+});

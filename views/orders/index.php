@@ -48,9 +48,9 @@ if (!function_exists('orderInitials')) {
                 <p>Manage and track your business transactions</p>
             </div>
 
-            <button class="btn-export">
-                <i class="ri-download-line"></i>
-                Export Report
+            <button type="button" class="btn-add-order" data-bs-toggle="modal" data-bs-target="#addOrderModal">
+                <i class="ri-add-line"></i>
+                Add Order
             </button>
         </div>
 
@@ -102,11 +102,6 @@ if (!function_exists('orderInitials')) {
                     <i class="ri-calendar-line"></i>
                     <input id="dateRange" type="text" placeholder="Select Date" readonly>
                 </label>
-
-                <button type="button" class="btn-add-order" data-bs-toggle="modal" data-bs-target="#addOrderModal">
-                    <i class="ri-add-line"></i>
-                    Add Order
-                </button>
             </div>
         </div>
 
@@ -165,7 +160,7 @@ if (!function_exists('orderInitials')) {
                                         <a href="#" class="btn-action-icon" title="Edit" data-bs-toggle="modal" data-bs-target="#editOrderModal<?= $order['id']; ?>">
                                             <i class="ri-pencil-line"></i>
                                         </a>
-                                        <a href="index.php?page=orders&action=delete&id=<?= $order['id']; ?>" class="btn-action-icon btn-action-delete" title="Hapus" onclick="return confirm('Hapus order ini?')">
+                                        <a href="javascript:void(0);" class="btn-action-icon btn-action-delete" title="Delete" data-delete-url="index.php?page=orders&action=delete&id=<?= $order['id']; ?>" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
                                             <i class="ri-delete-bin-line"></i>
                                         </a>
                                     </div>
@@ -191,11 +186,19 @@ if (!function_exists('orderInitials')) {
     </div>
 </div>
 
+<script src="assets/js/script.js"></script>
+
 <?php include 'views/orders/add.php'; ?>
 
 <?php foreach ($orders as $order): ?>
     <?php include 'views/orders/detail.php'; ?>
     <?php include 'views/orders/edit.php'; ?>
 <?php endforeach; ?>
+
+<?php
+$deleteTitle = "Delete Order";
+$deleteMessage = "Are you sure you want to delete this order?";
+include 'views/orders/delete.php';
+?>
 
 <?php include 'views/layout/footer.php'; ?>
