@@ -230,7 +230,7 @@
     color: var(--secondary-text);
     letter-spacing: 0.5px;
     padding: 16px 24px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #ECECEC;
 }
 
@@ -241,6 +241,7 @@
     border-top: 1px solid var(--border);
     vertical-align: middle;
     border-bottom: 1px solid #ECECEC;
+    text-align: center;
 }
 
 .product-table tbody tr:hover {

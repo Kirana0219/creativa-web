@@ -135,7 +135,7 @@
     background-color: var(--white);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 20px;
+    padding: 18px;
 }
 
 .stat-card-top {
@@ -465,21 +465,21 @@
 }
 
 .product-table th {
-    text-align: left;
+    text-align: center;
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.03em;
     color: var(--secondary);
-    padding: 14px 20px;
+    padding: 14px 14px;
 }
 
 .product-table th.checkbox-col {
-    width: 40px;
+    width: 20px;
 }
 
 .product-table th.col-actions {
-    text-align: right;
+    text-align: center;
 }
 
 .product-table td {
@@ -488,6 +488,7 @@
     color: var(--text);
     border-top: 1px solid var(--border);
     vertical-align: middle;
+    text-align: center;
 }
 
 .checkbox-custom {

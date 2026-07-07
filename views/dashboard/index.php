@@ -178,7 +178,6 @@ $dashboardUrl = function (array $overrides = []) use ($page, $limit, $rangeDays)
                             <td>
                                 <div class="customer-cell">
                                     <span class="customer-name"><?= htmlspecialchars($order['customer_name']) ?></span>
-                                    <span class="customer-email"><?= htmlspecialchars($order['email']) ?></span>
                                 </div>
                             </td>
                             <td><?= date('M d, Y', strtotime($order['order_date'])) ?></td>
