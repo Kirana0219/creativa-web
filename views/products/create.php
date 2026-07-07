@@ -1,4 +1,7 @@
 <?php
+
+$categories = $categories ?? [];
+
 include 'views/layout/header.php';
 include 'views/layout/sidebar.php';
 ?>

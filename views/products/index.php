@@ -1,4 +1,23 @@
 <?php
+
+$search = $search ?? '';
+$categoryId = $categoryId ?? 0;
+$status = $status ?? '';
+$sort = $sort ?? 'newest';
+$limit = $limit ?? 10;
+$page = $page ?? 1;
+$totalPages = $totalPages ?? 1;
+$totalProductsFiltered = $totalProductsFiltered ?? 0;
+$offset = $offset ?? 0;
+$products = $products ?? [];
+$categories = $categories ?? [];
+$stats = $stats ?? [
+    'total_products' => 0,
+    'low_stock_items' => 0,
+    'total_inventory_value' => 0,
+    'total_categories' => 0
+];
+
 include 'views/layout/header.php';
 include 'views/layout/sidebar.php';
 

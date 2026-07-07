@@ -1,4 +1,15 @@
 <?php
+
+$product = $product ?? [
+    'id' => '',
+    'name' => '',
+    'category_id' => '',
+    'price' => 0,
+    'stock' => 0,
+    'image' => null,
+];
+$categories = $categories ?? [];
+
 include 'views/layout/header.php';
 include 'views/layout/sidebar.php';
 ?>
