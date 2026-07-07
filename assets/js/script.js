@@ -1,4 +1,34 @@
 document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-order-alert-close]").forEach(button => {
+        button.addEventListener("click", () => {
+            button.closest(".order-alert")?.remove();
+        });
+    });
+
+    const addOrderForm = document.querySelector("#addOrderModal form");
+    if (addOrderForm) {
+        const productSelect = addOrderForm.querySelector("[data-order-product-select]");
+        const quantityInput = addOrderForm.querySelector("[data-order-quantity]");
+        const totalAmountInput = addOrderForm.querySelector("[data-order-total-amount]");
+        const productPriceInput = addOrderForm.querySelector("[data-order-product-price]");
+        const rupiahFormatter = new Intl.NumberFormat("id-ID");
+
+        const syncAddOrderAmount = () => {
+            const selectedOption = productSelect?.selectedOptions?.[0];
+            const price = Number(selectedOption?.dataset.price || 0);
+            const quantity = Math.max(1, Number(quantityInput?.value || 1));
+            const total = price * quantity;
+
+            if (quantityInput) quantityInput.value = quantity;
+            if (totalAmountInput) totalAmountInput.value = total;
+            if (productPriceInput) productPriceInput.value = `Rp ${rupiahFormatter.format(price)}`;
+        };
+
+        productSelect?.addEventListener("change", syncAddOrderAmount);
+        quantityInput?.addEventListener("input", syncAddOrderAmount);
+        syncAddOrderAmount();
+    }
+
     // ===== Date Picker =====
     const dateInput = document.querySelector("#dateRange");
     const dateFilter = document.querySelector(".date-filter");

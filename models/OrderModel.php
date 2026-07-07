@@ -10,6 +10,7 @@ class OrderModel
     {
         $database = new Database();
         $this->conn = $database->getConnection();
+        $this->ensureOrderColumns();
     }
 
     public function getAllOrders()
@@ -19,10 +20,14 @@ class OrderModel
                     o.order_code,
                     o.order_date,
                     o.payment_status,
+                    o.payment_method,
                     o.status AS order_status,
+                    o.total_items AS stored_total_items,
                     o.total_amount,
+                    o.internal_notes,
                     c.name AS customer_name,
                     c.email,
+                    COALESCE(NULLIF(o.total_items, 0), SUM(COALESCE(oi.quantity, 0)), 0) AS total_items,
                     GROUP_CONCAT(
                         CONCAT(p.name, IF(oi.quantity > 1, CONCAT(' x', oi.quantity), ''))
                         ORDER BY oi.id
@@ -38,8 +43,11 @@ class OrderModel
                     o.order_code,
                     o.order_date,
                     o.payment_status,
+                    o.payment_method,
                     o.status,
+                    o.total_items,
                     o.total_amount,
+                    o.internal_notes,
                     c.name,
                     c.email
                 ORDER BY o.order_date DESC, o.id DESC";
@@ -59,10 +67,14 @@ class OrderModel
                     o.order_code,
                     o.order_date,
                     o.payment_status,
+                    o.payment_method,
                     o.status AS order_status,
+                    o.total_items AS stored_total_items,
                     o.total_amount,
+                    o.internal_notes,
                     c.name AS customer_name,
                     c.email,
+                    COALESCE(NULLIF(o.total_items, 0), SUM(COALESCE(oi.quantity, 0)), 0) AS total_items,
                     GROUP_CONCAT(
                         CONCAT(p.name, IF(oi.quantity > 1, CONCAT(' x', oi.quantity), ''))
                         ORDER BY oi.id
@@ -78,8 +90,11 @@ class OrderModel
                     o.order_code,
                     o.order_date,
                     o.payment_status,
+                    o.payment_method,
                     o.status,
+                    o.total_items,
                     o.total_amount,
+                    o.internal_notes,
                     c.name,
                     c.email
                 ORDER BY o.order_date DESC, o.id DESC
@@ -93,6 +108,256 @@ class OrderModel
             return $result->fetch_all(MYSQLI_ASSOC);
         }
         return [];
+    }
+
+    public function createOrder($data)
+    {
+        if ($data['customer_name'] === '' || $data['email'] === '') {
+            return false;
+        }
+
+        $product = $this->getProductForOrder((int) ($data['product_id'] ?? 0));
+        if (!$product) {
+            return false;
+        }
+
+        $customerId = $this->findOrCreateCustomer($data['customer_name'], $data['email']);
+        if (!$customerId) {
+            return false;
+        }
+
+        $orderCode = $this->generateOrderCode();
+        $orderDate = $data['order_date'] ?: date('Y-m-d');
+        $totalItems = max(1, (int) $data['total_items']);
+        $totalAmount = (float) $product['price'] * $totalItems;
+
+        $this->conn->begin_transaction();
+        $query = "INSERT INTO orders
+                    (order_code, customer_id, order_date, payment_status, payment_method, status, total_items, total_amount, internal_notes)
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            $this->conn->rollback();
+            return false;
+        }
+
+        $paymentStatus = $data['payment_status'];
+        $paymentMethod = $data['payment_method'];
+        $orderStatus = $data['order_status'];
+        $internalNotes = $data['internal_notes'];
+
+        $stmt->bind_param(
+            "sissssids",
+            $orderCode,
+            $customerId,
+            $orderDate,
+            $paymentStatus,
+            $paymentMethod,
+            $orderStatus,
+            $totalItems,
+            $totalAmount,
+            $internalNotes
+        );
+
+        if (!$stmt->execute()) {
+            $this->conn->rollback();
+            return false;
+        }
+
+        $orderId = (int) $this->conn->insert_id;
+        $productId = (int) $product['id'];
+        $price = (float) $product['price'];
+        $itemStmt = $this->conn->prepare("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
+
+        if (!$itemStmt) {
+            $this->conn->rollback();
+            return false;
+        }
+
+        $itemStmt->bind_param("iiid", $orderId, $productId, $totalItems, $price);
+        if (!$itemStmt->execute()) {
+            $this->conn->rollback();
+            return false;
+        }
+
+        $this->conn->commit();
+        return true;
+    }
+
+    public function updateOrder($id, $data)
+    {
+        $order = $this->getOrderById($id);
+        if (!$order) {
+            return false;
+        }
+
+        if ($data['customer_name'] !== '' && $data['email'] !== '') {
+            $customerUpdated = $this->updateCustomer(
+                (int) $order['customer_id'],
+                $data['customer_name'],
+                $data['email']
+            );
+
+            if (!$customerUpdated) {
+                return false;
+            }
+        }
+
+        $orderDate = $data['order_date'] ?: $order['order_date'];
+        $query = "UPDATE orders
+                  SET order_date = ?,
+                      payment_status = ?,
+                      payment_method = ?,
+                      status = ?,
+                      total_items = ?,
+                      total_amount = ?,
+                      internal_notes = ?
+                  WHERE id = ?";
+
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return false;
+        }
+
+        $paymentStatus = $data['payment_status'];
+        $paymentMethod = $data['payment_method'];
+        $orderStatus = $data['order_status'];
+        $totalItems = $data['total_items'];
+        $totalAmount = $data['total_amount'];
+        $internalNotes = $data['internal_notes'];
+
+        $stmt->bind_param(
+            "ssssidsi",
+            $orderDate,
+            $paymentStatus,
+            $paymentMethod,
+            $orderStatus,
+            $totalItems,
+            $totalAmount,
+            $internalNotes,
+            $id
+        );
+
+        return $stmt->execute();
+    }
+
+    public function deleteOrder($id)
+    {
+        $stmt = $this->conn->prepare("DELETE FROM orders WHERE id = ?");
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
+
+    public function getProductsForOrder()
+    {
+        $query = "SELECT id, name, price, stock, status
+                  FROM products
+                  WHERE status != 'out_of_stock'
+                  ORDER BY name ASC";
+
+        $result = $this->conn->query($query);
+        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    }
+
+    private function getProductForOrder($id)
+    {
+        $stmt = $this->conn->prepare("SELECT id, name, price FROM products WHERE id = ? LIMIT 1");
+        if (!$stmt) {
+            return null;
+        }
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result ? $result->fetch_assoc() : null;
+    }
+
+    private function getOrderById($id)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM orders WHERE id = ? LIMIT 1");
+        if (!$stmt) {
+            return null;
+        }
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result ? $result->fetch_assoc() : null;
+    }
+
+    private function findOrCreateCustomer($name, $email)
+    {
+        $stmt = $this->conn->prepare("SELECT id FROM customers WHERE email = ? LIMIT 1");
+        if (!$stmt) {
+            return null;
+        }
+
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $existing = $result ? $result->fetch_assoc() : null;
+
+        if ($existing) {
+            $this->updateCustomer((int) $existing['id'], $name, $email);
+            return (int) $existing['id'];
+        }
+
+        $insert = $this->conn->prepare("INSERT INTO customers (name, email) VALUES (?, ?)");
+        if (!$insert) {
+            return null;
+        }
+
+        $insert->bind_param("ss", $name, $email);
+        if (!$insert->execute()) {
+            return null;
+        }
+
+        return (int) $insert->insert_id;
+    }
+
+    private function updateCustomer($id, $name, $email)
+    {
+        $stmt = $this->conn->prepare("UPDATE customers SET name = ?, email = ? WHERE id = ?");
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param("ssi", $name, $email, $id);
+        return $stmt->execute();
+    }
+
+    private function generateOrderCode()
+    {
+        do {
+            $code = 'ORD-' . random_int(1000, 9999);
+            $stmt = $this->conn->prepare("SELECT id FROM orders WHERE order_code = ? LIMIT 1");
+            $stmt->bind_param("s", $code);
+            $stmt->execute();
+            $exists = $stmt->get_result()->fetch_assoc();
+        } while ($exists);
+
+        return $code;
+    }
+
+    private function ensureOrderColumns()
+    {
+        $columns = [
+            'payment_method' => "ALTER TABLE orders ADD COLUMN payment_method VARCHAR(100) DEFAULT NULL AFTER payment_status",
+            'total_items' => "ALTER TABLE orders ADD COLUMN total_items INT NOT NULL DEFAULT 0 AFTER status",
+            'internal_notes' => "ALTER TABLE orders ADD COLUMN internal_notes TEXT DEFAULT NULL AFTER total_amount",
+        ];
+
+        foreach ($columns as $column => $alterSql) {
+            $result = $this->conn->query("SHOW COLUMNS FROM orders LIKE '{$column}'");
+            if ($result && $result->num_rows === 0) {
+                $this->conn->query($alterSql);
+            }
+        }
     }
 
     /**
