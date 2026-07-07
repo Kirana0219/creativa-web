@@ -112,9 +112,8 @@
 ======================= */
 
 .footer{
-    background:#fff;
+    background:#ffff;
     border-top:1px solid var(--border);
-    padding:16px 0;
     text-align:center;
 }
 

@@ -51,7 +51,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 28px;
+    margin-bottom: 30px;
 }
 
 
@@ -59,7 +59,7 @@
     font-size: 28px;
     font-weight: 700;
     color: var(--text);
-    margin: 0 0 6px 0;
+    margin: 0 0 8px 0;
 }
 
 .catalog-title p {
@@ -71,7 +71,7 @@
 .catalog-header-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 }
 
 /* ==================== BUTTONS ==================== */
@@ -142,17 +142,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 30px;
 }
 
 .stat-icon {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .stat-icon.icon-total {
@@ -172,7 +172,7 @@
 }
 
 .stat-growth {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
@@ -283,13 +283,13 @@
 }
 
 .summary-card .icon {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 20px;
     color: var(--white);
 }
 
@@ -311,7 +311,7 @@
 
 .summary-card .card-title {
     display: block;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.03em;
