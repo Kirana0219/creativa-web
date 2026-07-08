@@ -25,6 +25,11 @@ CREATE TABLE users (
     INDEX idx_status (status)
 ) ENGINE=InnoDB;
 
+-- INI SAJA KIR PAKAI
+ALTER TABLE users
+ADD COLUMN role ENUM('Admin', 'User') NOT NULL DEFAULT 'User' AFTER email,
+ADD COLUMN last_login TIMESTAMP NULL DEFAULT NULL AFTER created_at;
+
 -- ============================================
 -- 2. CUSTOMERS TABLE
 -- ============================================
