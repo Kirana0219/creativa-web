@@ -156,7 +156,7 @@ $dashboardUrl = function (array $overrides = []) use ($page, $limit, $rangeDays)
                     <th>Amount</th>
                     <th>Payment</th>
                     <th>Status</th>
-                    <th class="col-actions">Action</th>
+                    <!-- <th class="col-actions">Action</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -201,19 +201,6 @@ $dashboardUrl = function (array $overrides = []) use ($page, $limit, $rangeDays)
                                 <span class="badge-status badge-<?= htmlspecialchars($order['order_status']) ?>">
                                     <?= htmlspecialchars(ucfirst($order['order_status'])) ?>
                                 </span>
-                            </td>
-                            <td class="col-actions">
-                                <div class="action-buttons action-buttons-right">
-                                    <a href="index.php?page=orders&action=view&id=<?= $order['id'] ?>" class="btn-action-icon" title="Lihat">
-                                        <i class="ri-eye-line"></i>
-                                    </a>
-                                    <a href="index.php?page=orders&action=edit&id=<?= $order['id'] ?>" class="btn-action-icon" title="Edit">
-                                        <i class="ri-pencil-line"></i>
-                                    </a>
-                                    <a href="index.php?page=orders&action=delete&id=<?= $order['id'] ?>" class="btn-action-icon btn-action-delete" title="Hapus" onclick="return confirm('Hapus order ini?')">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </a>
-                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
