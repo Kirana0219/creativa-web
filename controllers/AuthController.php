@@ -111,6 +111,9 @@ class AuthController
             exit;
         }
 
+        // update last login
+        $this->userModel->updateLastLogin($user['id']);
+
         // set session
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['name'] = $user['name'];

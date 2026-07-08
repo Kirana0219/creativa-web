@@ -1,37 +1,31 @@
 <div 
     class="modal fade" 
-    id="editUserModal<?= $user['id']; ?>" 
+    id="addUserModal" 
     tabindex="-1" 
-    aria-labelledby="editUserModalLabel<?= $user['id']; ?>" 
+    aria-labelledby="addUserModalLabel" 
     aria-hidden="true">
 
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-
             <!-- Header -->
             <div class="modal-header">
-                <h5 class="modal-title" id="editUserModalLabel<?= $user['id']; ?>">
-                    Edit User
+                <h5 class="modal-title" id="addUserModalLabel">
+                    Add New User
                 </h5>
                 <button 
                     type="button" 
                     class="btn-close" 
-                    data-bs-dismiss="modal">
+                    data-bs-dismiss="modal"
+                    aria-label="Close">
                 </button>
             </div>
 
             <!-- Form -->
             <form 
-                action="index.php?page=users&action=update"
+                action="index.php?page=users&action=store" 
                 method="POST"
                 enctype="multipart/form-data">
-
                 <div class="modal-body">
-                    <input 
-                        type="hidden"
-                        name="user_id"
-                        value="<?= $user['id']; ?>">
-
                     <!-- Name -->
                     <div class="mb-3">
                         <label class="form-label">
@@ -42,7 +36,7 @@
                             type="text"
                             name="name"
                             class="form-control"
-                            value="<?= htmlspecialchars($user['name']); ?>"
+                            placeholder="Enter user name"
                             required>
                     </div>
 
@@ -51,11 +45,12 @@
                         <label class="form-label">
                             Email
                         </label>
+
                         <input
                             type="email"
                             name="email"
                             class="form-control"
-                            value="<?= htmlspecialchars($user['email']); ?>"
+                            placeholder="Enter email address"
                             required>
                     </div>
 
@@ -69,11 +64,8 @@
                             type="password"
                             name="password"
                             class="form-control"
-                            placeholder="Leave empty to keep current password">
-
-                        <small class="text-muted">
-                            Fill only if you want to change password.
-                        </small>
+                            placeholder="Enter password"
+                            required>
                     </div>
 
                     <!-- Role -->
@@ -86,16 +78,12 @@
                             name="role"
                             class="form-select">
 
-                            <option 
-                                value="Admin"
-                                <?= $user['role'] === 'Admin' ? 'selected' : ''; ?>>
-                                Admin
+                            <option value="User">
+                                User
                             </option>
 
-                            <option 
-                                value="User"
-                                <?= $user['role'] === 'User' ? 'selected' : ''; ?>>
-                                User
+                            <option value="Admin">
+                                Admin
                             </option>
                         </select>
                     </div>
@@ -106,48 +94,36 @@
                             Status
                         </label>
 
-                        <select 
+                        <select
                             name="status"
                             class="form-select">
 
-                            <option 
-                                value="Active"
-                                <?= $user['status'] === 'Active' ? 'selected' : ''; ?>>
+                            <option value="Active">
                                 Active
                             </option>
 
-                            <option 
-                                value="Inactive"
-                                <?= $user['status'] === 'Inactive' ? 'selected' : ''; ?>>
+                            <option value="Inactive">
                                 Inactive
                             </option>
                         </select>
                     </div>
 
                     <!-- Avatar -->
-                    <div class="mb-3">
-                        <label class="form-label">
-                            Profile Photo
-                        </label>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Profile Photo
+                            </label>
+                            
+                            <input
+                                type="file"
+                                name="avatar"
+                                class="form-control"
+                                accept="image/*">
 
-                        <?php if (!empty($user['avatar'])): ?>
-                            <div class="mb-2">
-                                <img 
-                                    src="assets/uploads/users/<?= htmlspecialchars($user['avatar']); ?>"
-                                    class="user-avatar"
-                                    alt="Current Avatar">
-                            </div>
-                        <?php endif; ?>
-
-                        <input
-                            type="file"
-                            name="avatar"
-                            class="form-control"
-                            accept="image/*">
-                        <small class="text-muted">
-                            Leave empty to keep current photo.
-                        </small>
-                    </div>
+                            <small class="text-muted">
+                                JPG, PNG, JPEG (Max 2MB)
+                            </small>
+                        </div>
                 </div>
 
                 <!-- Footer -->
@@ -158,10 +134,11 @@
                         data-bs-dismiss="modal">
                         Cancel
                     </button>
+
                     <button
                         type="submit"
                         class="btn btn-primary">
-                        Update User
+                        Save User
                     </button>
                 </div>
             </form>

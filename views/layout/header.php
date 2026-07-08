@@ -2,19 +2,21 @@
 <html lang="en">
 <head>
     <?php
-    $currentPage = $_GET['page'] ?? 'dashboard';
-    $headerUser = null;
+        $currentPage = $_GET['page'] ?? 'dashboard';
+        $headerUser = null;
 
-    if (isset($_SESSION['user_id'])) {
-        require_once 'models/UserModel.php';
-        $userModel = new UserModel();
-        $headerUser = $userModel->getUserById((int) $_SESSION['user_id']);
-    }
+        if (isset($_SESSION['user_id'])) {
+            require_once 'models/UserModel.php';
+            $userModel = new UserModel();
+            $headerUser = $userModel->getUserById((int) $_SESSION['user_id']);
+        }
 
-    $profileName = $headerUser['name'] ?? ($_SESSION['name'] ?? 'Admin');
-    $profileEmail = $headerUser['email'] ?? ($_SESSION['email'] ?? 'Business Owner');
-    $profileAvatar = $headerUser['avatar'] ?? '';
-    $profileAvatar = $profileAvatar ? 'assets/uploads/' . $profileAvatar : 'https://i.pravatar.cc/150?u=' . urlencode($profileEmail);
+        $profileName = $headerUser['name'] ?? ($_SESSION['name'] ?? 'Admin');
+        $profileEmail = $headerUser['email'] ?? ($_SESSION['email'] ?? 'Business Owner');
+        $profileAvatar = $headerUser['avatar'] ?? '';
+        $profileAvatar = $profileAvatar
+            ? 'assets/uploads/users/' . $profileAvatar
+            : 'https://i.pravatar.cc/150?u=' . urlencode($profileEmail);
     ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,12 +27,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">   
     <link rel="stylesheet" href="assets/css/global.css">
     <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/orders.css">
+    <link rel="stylesheet" href="assets/css/users.css">
 
-    <?php if ($currentPage === 'orders'): ?>
+    <!-- <?php if ($currentPage === 'orders'): ?>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <link rel="stylesheet" href="assets/css/orders.css">
+
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <?php endif; ?>
+    <?php endif; ?> -->
 </head>
 
 <body>
