@@ -478,10 +478,6 @@
     width: 20px;
 }
 
-.product-table th.col-actions {
-    text-align: center;
-}
-
 .product-table td {
     padding: 16px 20px;
     font-size: 14px;
@@ -607,38 +603,6 @@
     font-weight: 600;
     background-color: var(--success-bg);
     color: var(--success);
-}
-
-/* ==================== ACTION BUTTONS ==================== */
-.action-buttons {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.action-buttons-right {
-    justify-content: flex-end;
-}
-
-.btn-action-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    color: var(--secondary);
-    text-decoration: none;
-    transition: all 0.15s ease-in-out;
-}
-
-.btn-action-icon:hover {
-    background-color: var(--soft-gray);
-    color: var(--text);
-}
-
-.btn-action-delete:hover {
-    color: var(--danger);
 }
 
 /* ==================== EMPTY STATE ==================== */
