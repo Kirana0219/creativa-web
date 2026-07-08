@@ -1,14 +1,17 @@
 <?php
 
 require_once 'models/OrderModel.php';
+require_once 'models/ProdukModel.php';
 
 class OrderController
 {
     private $orderModel;
+    private $produkModel;
 
     public function __construct()
     {
         $this->orderModel = new OrderModel();
+        $this->produkModel = new ProdukModel();
     }
 
     private function checkAuth()
@@ -32,42 +35,67 @@ class OrderController
         include 'views/orders/index.php';
     }
 
-    public function store()
-    {
-        $this->checkAuth();
+ public function store()
+{
+    $this->checkAuth();
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: index.php?page=orders');
-            exit;
-        }
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header('Location: index.php?page=orders');
+        exit;
+    }
 
-        $success = $this->orderModel->createOrder($this->orderDataFromRequest());
-        $_SESSION['order_flash'] = $success
-            ? ['type' => 'success', 'message' => 'Order berhasil ditambahkan.']
-            : ['type' => 'danger', 'message' => 'Order gagal ditambahkan.'];
+    $data = $this->orderDataFromRequest();
+
+    $product = $this->produkModel->getProductById($data['product_id']);
+
+    if (!$product) {
+
+        $_SESSION['order_flash'] = [
+            'type' => 'danger',
+            'message' => 'Produk tidak ditemukan.'
+        ];
 
         header('Location: index.php?page=orders');
         exit;
     }
 
-    public function update()
-    {
-        $this->checkAuth();
+    if ($product['stock'] < $data['total_items']) {
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: index.php?page=orders');
-            exit;
-        }
-
-        $id = (int) ($_POST['order_id'] ?? 0);
-        $success = $id > 0 && $this->orderModel->updateOrder($id, $this->orderDataFromRequest());
-        $_SESSION['order_flash'] = $success
-            ? ['type' => 'success', 'message' => 'Order berhasil diperbarui.']
-            : ['type' => 'danger', 'message' => 'Order gagal diperbarui.'];
+        $_SESSION['order_flash'] = [
+            'type' => 'danger',
+            'message' => 'Stock tidak mencukupi.'
+        ];
 
         header('Location: index.php?page=orders');
         exit;
     }
+
+    $success = $this->orderModel->createOrder($data);
+
+    if ($success) {
+
+        $this->produkModel->decreaseStock(
+            $data['product_id'],
+            $data['total_items']
+        );
+
+        $_SESSION['order_flash'] = [
+            'type' => 'success',
+            'message' => 'Order berhasil ditambahkan.'
+        ];
+
+    } else {
+
+        $_SESSION['order_flash'] = [
+            'type' => 'danger',
+            'message' => 'Order gagal ditambahkan.'
+        ];
+
+    }
+
+    header('Location: index.php?page=orders');
+    exit;
+}
 
     public function delete()
     {

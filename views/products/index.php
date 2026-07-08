@@ -273,9 +273,12 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
                                         onclick="openEditProductModal(this)">
                                         <i class="ri-pencil-line"></i>
                                     </button>
-                                    <a href="index.php?page=products&action=delete&id=<?= $p['id'] ?>" class="btn-action-icon btn-action-delete" title="Delete" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                                    <button
+                                        type="button"
+                                        class="btn-action-icon btn-action-delete"
+                                        onclick="confirmDelete(<?= $p['id'] ?>)">
                                         <i class="ri-delete-bin-line"></i>
-                                    </a>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -558,6 +561,31 @@ $productUrl = function(array $overrides = []) use ($search, $categoryId, $status
 </div>
 
 <script>
+function confirmDelete(id) {
+
+    Swal.fire({
+        title: 'Delete Product?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#dc3545',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            window.location.href =
+                'index.php?page=products&action=delete&id=' + id;
+
+        }
+
+    });
+
+}
     // Modal Control
     function openFilterModal() {
         document.getElementById('filterModal').classList.add('is-open');

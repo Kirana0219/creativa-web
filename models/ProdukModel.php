@@ -387,4 +387,28 @@ class ProdukModel {
         }
         return 0;
     }
+
+    public function decreaseStock($productId, $qty)
+    {
+        $sql = "UPDATE products
+                SET stock = stock - ?
+                WHERE id = ?
+                AND stock >= ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("iii", $qty, $productId, $qty);
+
+        return $stmt->execute();
+    }
+    public function increaseStock($productId, $qty)
+    {
+    $sql = "UPDATE products
+            SET stock = stock + ?
+            WHERE id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("ii", $qty, $productId);
+
+    return $stmt->execute();
+    }
 }

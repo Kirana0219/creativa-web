@@ -109,8 +109,8 @@ class ProdukController {
 
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
             if (in_array($fileExtension, $allowedExtensions)) {
-                $newFileName = time() . '_' . uniqid() . '.' . $fileExtension;
-                $uploadFileDir = './assets/uploads/';
+                $newFileName = date('Ymd_His') . '.' . $fileExtension;
+                $uploadFileDir = './assets/uploads/products/';
                 
                 // Create directory if it doesn't exist
                 if (!is_dir($uploadFileDir)) {
