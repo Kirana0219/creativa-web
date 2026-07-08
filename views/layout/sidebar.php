@@ -35,14 +35,6 @@
                 <span>Orders</span>
             </a>
         </li>
-
-        <li>
-            <a href="index.php?page=events"
-               class="<?= ($_GET['page'] ?? '') == 'events' ? 'active' : '' ?>">
-                <i class="ri-calendar-event-line"></i>
-                <span>Events</span>
-            </a>
-        </li>
         
         <li>
             <a href="index.php?page=users"

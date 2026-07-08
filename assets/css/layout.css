@@ -1,26 +1,12 @@
-:root{
-    --primary:#8650F4;
-    --background:#F9F9FF;
-    --text:#141B2B;
-    --secondary:#464555;
-    --border:#C7C4D8;
-}
-
-*{
-    font-family:'Poppins',sans-serif;
-}
-
 /* =======================
    Header
 ======================= */
 
-body{
-    margin:0;
-    background:var(--background);
-}
-
 .main-content{
     margin-left:260px;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
 }
 
 .top-header{
@@ -35,17 +21,6 @@ body{
     top:0;
     z-index:999;
 }
-
-/* .page-title h3{
-    margin:0;
-    font-size:24px;
-    font-weight:600;
-    color:var(--text);
-} */
-
-/* .page-title small{
-    color:var(--secondary);
-} */ 
 
 .header-right{
     display:flex;
@@ -65,6 +40,7 @@ body{
     padding:10px 18px 10px 42px;
     outline:none;
     transition:.2s;
+    background:var(--background);
 }
 
 .search-box input:focus{
@@ -77,7 +53,7 @@ body{
     top:50%;
     left:16px;
     transform:translateY(-50%);
-    color:#999;
+    color:var(--secondary-text);
 }
 
 .icon-btn{
@@ -87,9 +63,10 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:#F3F3F3;
+    background:var(--background);
     cursor:pointer;
     transition:.2s;
+    border:1px solid var(--border);
 }
 
 .icon-btn:hover{
@@ -127,8 +104,19 @@ body{
 }
 
 .profile-info small{
-    color:var(--secondary);
+    color: var(--secondary-text);
 }
+
+/* =======================
+   footer
+======================= */
+
+.footer{
+    background:#ffff;
+    border-top:1px solid var(--border);
+    text-align:center;
+}
+
 
 /* =======================
    Sidebar
@@ -141,7 +129,7 @@ body{
     width:260px;
     height:100vh;
     background:#FFFFFF;
-    border-right:1px solid #ECECEC;
+    border-right:1px solid var(--border);
     display:flex;
     flex-direction:column;
     z-index:1000;

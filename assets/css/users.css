@@ -1,0 +1,530 @@
+/* =====================================
+   USERS PAGE
+===================================== */
+
+.users-container {
+    width: 100%;
+}
+
+/* =====================================
+   USERS HEADER
+===================================== */
+
+.users-container .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.users-container .page-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.users-container .page-header p {
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 14px;
+}
+
+/* =====================================
+   ADD USER BUTTON
+===================================== */
+
+.btn-add-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    padding: 11px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.btn-add-user i {
+    font-size: 18px;
+}
+
+.btn-add-user:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* =====================================
+   USER CELL
+===================================== */
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.user-avatar-placeholder {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* =====================================
+   USER ROLE BADGE
+===================================== */
+
+.badge-admin,
+.badge-user {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Admin */
+.badge-admin {
+    background: #F3E8FF;
+    color: #7C3AED;
+}
+
+/* User */
+.badge-user {
+    background: #E0F2FE;
+    color: #0284C7;
+}
+
+/* =====================================
+   USER STATUS BADGE
+===================================== */
+
+.badge-status.badge-active {
+    background: #DCFCE7;
+    color: #15803D;
+}
+
+.badge-status.badge-inactive {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+/* =====================================
+   USERS FILTER
+===================================== */
+
+.users-container .filter-section {
+    margin-bottom: 24px;
+    margin-top: 24px;
+}
+
+.users-container .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.users-container .custom-filter {
+    min-width: 120px;
+}
+
+/* =====================================
+   USERS TABLE
+===================================== */
+
+.users-table {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.users-table .product-table td {
+    vertical-align: middle;
+}
+
+.users-table .product-table th {
+    white-space: nowrap;
+}
+
+.users-table .col-actions {
+    width: 130px;
+}
+
+.users-table .action-buttons {
+    justify-content: center;
+}
+
+.users-table .product-table td:first-child {
+    width: 40px;
+}
+
+.users-table .product-table td:nth-child(2),
+.users-table .product-table th:nth-child(2) {
+    min-width: 260px;
+}
+
+/* =====================================
+   USERS TABLE HOVER
+===================================== */
+
+.users-table .table-row {
+    transition: background .2s ease;
+}
+
+.users-table .table-row:hover {
+    background: var(--soft-gray);
+}
+
+/* =====================================
+   USER ACTION BUTTON
+===================================== */
+
+.users-table .btn-action-icon {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all .2s ease;
+}
+
+.users-table .btn-action-icon:hover {
+    background: var(--secondary-color);
+    color: var(--primary);
+}
+
+/* =====================================
+   USER PROFILE CELL INLINE
+===================================== */
+
+.users-table .user-cell{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.users-table .user-avatar,
+.users-table .user-avatar-placeholder{
+    width:42px;
+    height:42px;
+    flex-shrink:0;
+}
+
+.users-table .user-info{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    text-align:left;
+    line-height:1.3;
+    margin:0;
+}
+
+.users-table .customer-name{
+    display:block;
+    font-size:14px;
+    font-weight:600;
+    color:var(--text);
+    text-align:left;
+    margin:0;
+}
+
+.users-table .user-info small{
+    display:block;
+    font-size:12px;
+    color:var(--secondary);
+    text-align:left;
+    margin-top:2px;
+}
+
+/* =====================================
+   EMPTY STATE
+===================================== */
+
+.users-table .empty-state-cell {
+    height: 260px;
+    text-align: center;
+    color: var(--secondary);
+    font-size: 14px;
+}
+
+.users-table .empty-state-icon {
+    display: block;
+    font-size: 40px;
+    color: var(--border);
+    margin-bottom: 12px;
+}
+
+/* =====================================
+   RESPONSIVE USERS PAGE
+===================================== */
+
+@media (max-width: 992px) {
+    .users-container .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .users-container .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .users-container .filter-group {
+        width: 100%;
+    }
+
+    .users-container .custom-filter {
+        width: 100%;
+
+    }
+}
+
+/* =====================================
+   USERS MODAL
+===================================== */
+
+#addUserModal .modal-dialog {
+    max-width: 520px;
+}
+
+
+#addUserModal .modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+}
+
+/* =====================================
+   MODAL HEADER
+===================================== */
+
+#addUserModal .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+}
+
+#addUserModal .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* =====================================
+   MODAL BODY
+===================================== */
+
+#addUserModal .modal-body {
+    padding: 24px;
+}
+
+#addUserModal .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+/* =====================================
+   INPUT STYLE
+===================================== */
+
+#addUserModal .form-control,
+#addUserModal .form-select {
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text);
+    padding: 0 14px;
+}
+
+#addUserModal .form-control:focus,
+#addUserModal .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(134,80,244,0.15);
+}
+
+/* =====================================
+   AVATAR INPUT
+===================================== */
+
+#addUserModal input[type="file"] {
+    height: auto;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* =====================================
+   MODAL FOOTER
+===================================== */
+
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--background);
+}
+
+.btn-light {
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 14px;
+    border:1px solid #E1E5EF;
+    background:var(--white);
+    color:#111827;
+}
+
+.btn-light:hover {
+    background:var(--soft-gray);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+/* =====================================
+   USER DETAIL MODAL
+===================================== */
+
+.user-detail-modal {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.user-profile-detail {
+    text-align: center;
+    padding: 10px 0 20px;
+}
+
+.detail-avatar {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 14px;
+}
+
+.detail-avatar-placeholder {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    color: var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 14px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.user-profile-detail h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+}
+
+.user-profile-detail p {
+    font-size: 14px;
+    color: var(--secondary);
+    margin: 0;
+}
+
+.user-detail-list {
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1eff7;
+}
+
+.detail-item span {
+    color: var(--secondary);
+    font-size: 14px;
+}
+
+.detail-item strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+/* =====================================
+   USER NUMBER COLUMN
+===================================== */
+
+.user-number {
+    width: 40px;
+    min-width: 40px;
+    text-align: center;
+    font-weight: 500;
+    color: var(--secondary);
+}
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width: 576px) {
+    .users-container .page-header h2 {
+        font-size: 20px;
+    }
+
+    .btn-add-user {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .users-container .filter-group {
+        flex-direction: column;
+    }
+
+    .users-table {
+        overflow-x: auto;
+    }
+
+    .user-avatar,
+    .user-avatar-placeholder {
+        width: 36px;
+        height: 36px;
+    }
+
+    .user-info .customer-name {
+        font-size: 13px;
+    }
+}

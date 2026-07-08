@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - Creativa</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/auth.css">
 </head>
 
@@ -50,7 +51,7 @@
                     <label class="form-label">Email</label>
                     <div class="input-group">
                         <span class="input-icon">
-                            <i class="bi bi-envelope"></i>
+                            <i class="ri-mail-line"></i>
                         </span>
                         <input type="email" name="email" class="form-control" required placeholder="Enter your email">
                     </div>
@@ -59,11 +60,11 @@
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group">
                         <span class="input-icon">
-                            <i class="bi bi-lock"></i>
+                            <i class="ri-lock-line"></i>
                         </span>
                         <input type="password" id="password" name="password" class="form-control" required placeholder="••••••••">
                         <span class="eye-icon" onclick="togglePassword()">
-                            <i class="bi bi-eye-fill" id="eyeIcon"></i>
+                            <i class="ri-eye-line" id="eyeIcon"></i>
                         </span>
                     </div>
                 </div>
@@ -96,12 +97,12 @@ function togglePassword() {
 
     if (input.type === "password") {
         input.type = "text";
-        icon.classList.remove("bi-eye-fill");
-        icon.classList.add("bi-eye-slash-fill");
+        icon.classList.remove("ri-eye-line");
+        icon.classList.add("ri-eye-off-line");
     } else {
         input.type = "password";
-        icon.classList.remove("bi-eye-slash-fill");
-        icon.classList.add("bi-eye-fill");
+        icon.classList.remove("ri-eye-off-line");
+        icon.classList.add("ri-eye-line");
     }
 }
 </script>

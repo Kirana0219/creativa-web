@@ -1,0 +1,423 @@
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("[data-order-alert-close]").forEach(button => {
+        button.addEventListener("click", () => {
+            button.closest(".order-alert")?.remove();
+        });
+    });
+
+    const addOrderForm = document.querySelector("#addOrderModal form");
+    if (addOrderForm) {
+        const productSelect = addOrderForm.querySelector("[data-order-product-select]");
+        const quantityInput = addOrderForm.querySelector("[data-order-quantity]");
+        const totalAmountInput = addOrderForm.querySelector("[data-order-total-amount]");
+        const productPriceInput = addOrderForm.querySelector("[data-order-product-price]");
+        const rupiahFormatter = new Intl.NumberFormat("id-ID");
+
+        const syncAddOrderAmount = () => {
+            const selectedOption = productSelect?.selectedOptions?.[0];
+            const price = Number(selectedOption?.dataset.price || 0);
+            const quantity = Math.max(1, Number(quantityInput?.value || 1));
+            const total = price * quantity;
+
+            if (quantityInput) quantityInput.value = quantity;
+            if (totalAmountInput) totalAmountInput.value = total;
+            if (productPriceInput) productPriceInput.value = `Rp ${rupiahFormatter.format(price)}`;
+        };
+
+        productSelect?.addEventListener("change", syncAddOrderAmount);
+        quantityInput?.addEventListener("input", syncAddOrderAmount);
+        syncAddOrderAmount();
+    }
+
+    // ===== Date Picker =====
+    const dateInput = document.querySelector("#dateRange");
+    const dateFilter = document.querySelector(".date-filter");
+
+    let startDate = null;
+    let endDate = null;
+
+    if (dateInput && typeof flatpickr === "function") {
+        const calendar = flatpickr(dateInput, {
+            mode: "range",
+            dateFormat: "M d, Y",
+            disableMobile: true,
+            clickOpens: true,
+
+            onClose(selectedDates, dateStr, instance) {
+                if (selectedDates.length !== 2) {
+                    startDate = null;
+                    endDate = null;
+                    showPage(1);
+                    return;
+                }
+
+                startDate = new Date(selectedDates[0]);
+                endDate = new Date(selectedDates[1]);
+
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(23, 59, 59, 999);
+
+                const startText = startDate.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "2-digit"
+                });
+
+                const endText = endDate.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric"
+                });
+
+                instance.input.value = `${startText} - ${endText}`;
+
+                showPage(1);
+            }
+        });
+
+        dateFilter?.addEventListener("click", () => calendar.open());
+    }
+
+    // ===== Elements =====
+    const orderRows = [...document.querySelectorAll(".orders-table .table-row")];
+    const searchInput = document.querySelector(".search-order input");
+    const pageInfo = document.querySelector(".page-info");
+    const pagination = document.querySelector("[data-pagination]");
+
+    if (!pageInfo || !pagination) return;
+
+    const perPage = Number(pageInfo.dataset.perPage) || 5;
+
+    let currentPage = 1;
+    let currentStatus = "all";
+    let currentSearch = "";
+
+    // ===== Status Filter =====
+    document.querySelectorAll(".dropdown-item").forEach(item => {
+        item.addEventListener("click", e => {
+            e.preventDefault();
+
+            currentStatus = item.textContent.trim().toLowerCase();
+
+            item.closest(".dropdown")
+                .querySelector(".dropdown-toggle")
+                .textContent = `Status: ${item.textContent.trim()}`;
+
+            showPage(1);
+        });
+    });
+
+    // ===== Search =====
+    searchInput?.addEventListener("input", function () {
+        currentSearch = this.value.trim().toLowerCase();
+        showPage(1);
+    });
+
+    // ===== Filter =====
+    const getFilteredRows = () => {
+        return orderRows.filter(row => {
+            const statusMatch =
+                currentStatus === "all" ||
+                row.dataset.status === currentStatus;
+
+            const searchMatch =
+                !currentSearch ||
+                row.textContent.toLowerCase().includes(currentSearch);
+
+            let dateMatch = true;
+
+            if (startDate && endDate) {
+                const orderDate = new Date(row.dataset.date);
+                orderDate.setHours(12, 0, 0, 0);
+
+                dateMatch =
+                    orderDate >= startDate &&
+                    orderDate <= endDate;
+            }
+
+            return statusMatch && searchMatch && dateMatch;
+        });
+    };
+
+    // ===== Pagination =====
+    const getVisiblePages = totalPages => {
+        if (totalPages <= 5)
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+
+        if (currentPage <= 3)
+            return [1, 2, 3, "...", totalPages];
+
+        if (currentPage >= totalPages - 2)
+            return [1, "...", totalPages - 2, totalPages - 1, totalPages];
+
+        return [1, "...", currentPage, "...", totalPages];
+    };
+
+    const createButton = (label, page, active = false, disabled = false) => {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.textContent = label;
+        button.disabled = disabled;
+
+        button.classList.toggle("page-number", Number.isInteger(Number(label)));
+        button.classList.toggle("active", active);
+
+        button.addEventListener("click", () => showPage(page));
+
+        return button;
+    };
+
+    const renderPagination = totalPages => {
+        pagination.innerHTML = "";
+
+        pagination.append(
+            createButton(
+                "Previous",
+                currentPage - 1,
+                false,
+                currentPage === 1
+            )
+        );
+
+        getVisiblePages(totalPages).forEach(page => {
+            if (page === "...") {
+                const dots = document.createElement("span");
+                dots.textContent = "...";
+                pagination.append(dots);
+                return;
+            }
+
+            pagination.append(
+                createButton(
+                    page,
+                    page,
+                    page === currentPage
+                )
+            );
+        });
+
+        pagination.append(
+            createButton(
+                "Next",
+                currentPage + 1,
+                false,
+                currentPage === totalPages
+            )
+        );
+    };
+
+    // ===== Render Table =====
+    const showPage = page => {
+        const filteredRows = getFilteredRows();
+
+        const totalPages = Math.max(
+            1,
+            Math.ceil(filteredRows.length / perPage)
+        );
+
+        currentPage = Math.min(
+            Math.max(page, 1),
+            totalPages
+        );
+
+        const start = (currentPage - 1) * perPage;
+        const end = start + perPage;
+
+        orderRows.forEach(row => row.hidden = true);
+
+        filteredRows.forEach((row, index) => {
+            row.hidden = !(index >= start && index < end);
+        });
+
+        if (!filteredRows.length) {
+            pageInfo.textContent = "Showing 0 orders";
+            pagination.innerHTML = "";
+            return;
+        }
+
+        pageInfo.textContent =
+            `Showing ${start + 1} to ${Math.min(end, filteredRows.length)} of ${filteredRows.length} orders`;
+
+        renderPagination(totalPages);
+    };
+
+    showPage(1);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const deleteModal = document.getElementById('deleteConfirmModal');
+
+    if (!deleteModal) return;
+
+    const confirmDeleteButton =
+        document.getElementById('confirmDeleteButton');
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+
+        const button = event.relatedTarget;
+
+        const url = button.getAttribute('data-delete-url');
+
+        confirmDeleteButton.href = url;
+
+    });
+
+});
+
+/* =====================================
+   USERS FILTER
+===================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("userSearch");
+    const roleButton = document.getElementById("roleFilter");
+    const statusButton = document.getElementById("statusFilter");
+
+    const roleOptions = document.querySelectorAll(".role-option");
+    const statusOptions = document.querySelectorAll(".status-option");
+    const rows = document.querySelectorAll(".users-table .table-row");
+
+    let selectedRole = "all";
+    let selectedStatus = "all";
+
+    function filterUsers() {
+        const keyword = searchInput.value.toLowerCase();
+        rows.forEach(row => {
+            const nameEmail = row.dataset.search;
+            const role = row.dataset.role;
+            const status = row.dataset.status;
+            const matchSearch =
+                nameEmail.includes(keyword);
+            const matchRole =
+                selectedRole === "all" ||
+                role === selectedRole;
+            const matchStatus =
+                selectedStatus === "all" ||
+                status === selectedStatus;
+
+            if (
+                matchSearch &&
+                matchRole &&
+                matchStatus
+            ) {
+                row.style.display = "";
+
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    if(searchInput){
+        searchInput.addEventListener(
+            "keyup",
+            filterUsers
+        );
+    }
+
+    roleOptions.forEach(option => {
+        option.addEventListener(
+            "click",
+            function(e){
+                e.preventDefault();
+
+                selectedRole =
+                    this.dataset.role;
+                roleButton.innerHTML =
+                    "Role: " + this.innerText;
+                filterUsers();
+            }
+        );
+    });
+
+    statusOptions.forEach(option => {
+        option.addEventListener(
+            "click",
+            function(e){
+                e.preventDefault();
+
+                selectedStatus =
+                    this.dataset.status;
+                statusButton.innerHTML =
+                    "Status: " + this.innerText;
+                filterUsers();
+            }
+        );
+    });
+});
+
+/* =====================================
+   USERS PAGINATION
+===================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const rows = [
+        ...document.querySelectorAll(
+            ".users-table .table-row"
+        )
+    ];
+
+    const pageInfo =
+        document.querySelector(
+            ".users-table .page-info"
+        );
+
+    const pagination =
+        document.querySelector(
+            "[data-user-pagination]"
+        );
+
+    if (!rows.length || !pageInfo || !pagination)
+        return;
+    const perPage =
+        Number(pageInfo.dataset.perPage) || 10;
+    let currentPage = 1;
+
+    function renderPage(page){
+        const totalPages =
+            Math.ceil(rows.length / perPage);
+        currentPage = page;
+
+        rows.forEach(row => {
+            row.hidden = true;
+        });
+
+        const start =
+            (page - 1) * perPage;
+        const end =
+            start + perPage;
+        rows.slice(start,end)
+            .forEach(row=>{
+                row.hidden = false;
+            });
+
+        pageInfo.textContent =
+            `Showing ${start + 1} to ${Math.min(end, rows.length)} of ${rows.length} users`;
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages){
+        pagination.innerHTML="";
+        for(let i=1;i<=totalPages;i++){
+            const button =
+                document.createElement("button");
+            button.textContent=i;
+
+            button.className =
+                "page-number";
+
+
+            if(i===currentPage){
+                button.classList.add("active");
+            }
+
+            button.onclick=function(){
+                renderPage(i);
+            };
+
+            pagination.append(button);
+        }
+    }
+    renderPage(1);
+});
