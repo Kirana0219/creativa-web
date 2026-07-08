@@ -22,7 +22,6 @@ $internalNotes = trim((string) ($order['internal_notes'] ?? ''));
                 <section class="order-modal-section">
                     <h4>Customer Summary</h4>
                     <div class="customer-summary customer-summary-detail">
-                        <span class="customer-avatar"><?= htmlspecialchars($customerInitials); ?></span>
                         <div class="customer-summary-text">
                             <strong><?= htmlspecialchars($order['customer_name']); ?></strong>
                             <span><?= htmlspecialchars($order['email']); ?></span>
