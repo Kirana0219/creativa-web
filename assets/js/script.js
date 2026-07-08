@@ -264,3 +264,160 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+/* =====================================
+   USERS FILTER
+===================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("userSearch");
+    const roleButton = document.getElementById("roleFilter");
+    const statusButton = document.getElementById("statusFilter");
+
+    const roleOptions = document.querySelectorAll(".role-option");
+    const statusOptions = document.querySelectorAll(".status-option");
+    const rows = document.querySelectorAll(".users-table .table-row");
+
+    let selectedRole = "all";
+    let selectedStatus = "all";
+
+    function filterUsers() {
+        const keyword = searchInput.value.toLowerCase();
+        rows.forEach(row => {
+            const nameEmail = row.dataset.search;
+            const role = row.dataset.role;
+            const status = row.dataset.status;
+            const matchSearch =
+                nameEmail.includes(keyword);
+            const matchRole =
+                selectedRole === "all" ||
+                role === selectedRole;
+            const matchStatus =
+                selectedStatus === "all" ||
+                status === selectedStatus;
+
+            if (
+                matchSearch &&
+                matchRole &&
+                matchStatus
+            ) {
+                row.style.display = "";
+
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+    if(searchInput){
+        searchInput.addEventListener(
+            "keyup",
+            filterUsers
+        );
+    }
+
+    roleOptions.forEach(option => {
+        option.addEventListener(
+            "click",
+            function(e){
+                e.preventDefault();
+
+                selectedRole =
+                    this.dataset.role;
+                roleButton.innerHTML =
+                    "Role: " + this.innerText;
+                filterUsers();
+            }
+        );
+    });
+
+    statusOptions.forEach(option => {
+        option.addEventListener(
+            "click",
+            function(e){
+                e.preventDefault();
+
+                selectedStatus =
+                    this.dataset.status;
+                statusButton.innerHTML =
+                    "Status: " + this.innerText;
+                filterUsers();
+            }
+        );
+    });
+});
+
+/* =====================================
+   USERS PAGINATION
+===================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const rows = [
+        ...document.querySelectorAll(
+            ".users-table .table-row"
+        )
+    ];
+
+    const pageInfo =
+        document.querySelector(
+            ".users-table .page-info"
+        );
+
+    const pagination =
+        document.querySelector(
+            "[data-user-pagination]"
+        );
+
+    if (!rows.length || !pageInfo || !pagination)
+        return;
+    const perPage =
+        Number(pageInfo.dataset.perPage) || 10;
+    let currentPage = 1;
+
+    function renderPage(page){
+        const totalPages =
+            Math.ceil(rows.length / perPage);
+        currentPage = page;
+
+        rows.forEach(row => {
+            row.hidden = true;
+        });
+
+        const start =
+            (page - 1) * perPage;
+        const end =
+            start + perPage;
+        rows.slice(start,end)
+            .forEach(row=>{
+                row.hidden = false;
+            });
+
+        pageInfo.textContent =
+            `Showing ${start + 1} to ${Math.min(end, rows.length)} of ${rows.length} users`;
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages){
+        pagination.innerHTML="";
+        for(let i=1;i<=totalPages;i++){
+            const button =
+                document.createElement("button");
+            button.textContent=i;
+
+            button.className =
+                "page-number";
+
+
+            if(i===currentPage){
+                button.classList.add("active");
+            }
+
+            button.onclick=function(){
+                renderPage(i);
+            };
+
+            pagination.append(button);
+        }
+    }
+    renderPage(1);
+});

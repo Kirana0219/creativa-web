@@ -178,7 +178,7 @@ if (!function_exists('orderInitials')) {
             </table>
 
             <div class="pagination-footer">
-                <span class="page-info" data-per-page="5">Showing 0 orders</span>
+                <span class="page-info" data-per-page="10">Showing 0 orders</span>
                 <div class="pagination" data-pagination></div>
             </div>
         </div>
@@ -195,9 +195,9 @@ if (!function_exists('orderInitials')) {
 <?php endforeach; ?>
 
 <?php
-$deleteTitle = "Delete Order";
-$deleteMessage = "Are you sure you want to delete this order?";
-include 'views/orders/delete.php';
+    $deleteTitle = "Delete Order";
+    $deleteMessage = "Are you sure you want to delete this order?";
+    include 'views/orders/delete.php';
 ?>
 
 <?php include 'views/layout/footer.php'; ?>
