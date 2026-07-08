@@ -127,7 +127,6 @@ if (!function_exists('orderInitials')) {
                                 <td>
                                     <div class="customer-cell">
                                         <span class="customer-name"><?= htmlspecialchars($order['customer_name']); ?></span>
-                                        <span class="customer-email"><?= htmlspecialchars($order['email']); ?></span>
                                     </div>
                                 </td>
 

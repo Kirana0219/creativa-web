@@ -27,7 +27,7 @@ class OrderController
         $products = $this->orderModel->getProductsForOrder();
         $stats = $this->orderModel->getSummaryStats();
         $title = "Orders";
-        $breadcrumb = "Dashboard / Orders";
+        $breadcrumb = "Dashboard > Orders";
 
         include 'views/orders/index.php';
     }

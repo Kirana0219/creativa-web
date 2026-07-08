@@ -65,6 +65,15 @@ $paymentMethodOptions = ['Bank Transfer (BCA)', 'Credit Card', 'Cash on Delivery
                             </label>
                     </section> 
 
+                    <section class="order-modal-section">
+                        <h4>Internal Notes</h4>
+
+                        <textarea
+                            name="internal_notes"
+                            placeholder="Add a note for internal tracking..."
+                    ><?= htmlspecialchars($order['internal_notes'] ?? ''); ?></textarea>
+                    </section>
+
                     <div class="modal-actions">
                         <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn-modal-primary">Save Changes</button>

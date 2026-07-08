@@ -6,6 +6,9 @@ class UserController
     {
         include 'views/layout/header.php';
         include 'views/layout/sidebar.php';
+
+        $title = "Users";
+        $breadcrumb = "Dashboard > Users";
         include 'views/users/index.php';
         include 'views/layout/footer.php';
     }

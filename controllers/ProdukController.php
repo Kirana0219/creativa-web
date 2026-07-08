@@ -67,6 +67,7 @@ class ProdukController {
 
         // Pass variables to view
         $title = "Product Catalog";
+        $breadcrumb = "Dashboard > Products";
         require 'views/products/index.php';
     }
 

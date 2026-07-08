@@ -52,10 +52,6 @@ $internalNotes = trim((string) ($order['internal_notes'] ?? ''));
                             <span>Payment Status</span>
                             <strong><?= htmlspecialchars(ucfirst($order['payment_status'])); ?></strong>
                         </div>
-                        <!-- <div class="detail-field">
-                            <span>Payment Method</span>
-                            <strong><?= htmlspecialchars($order['payment_method'] ?: '-'); ?></strong>
-                        </div> -->
                         <div class="detail-field">
                             <span>Order Date</span>
                             <strong><?= date('M d, Y', strtotime($order['order_date'])); ?></strong>
@@ -64,6 +60,16 @@ $internalNotes = trim((string) ($order['internal_notes'] ?? ''));
                             <span>Products</span>
                             <strong><?= htmlspecialchars($order['product'] ?? 'No product'); ?></strong>
                         </div>
+                    </div>
+                </section>
+
+                <section class="order-modal-section">
+                    <h4>Internal Notes</h4>
+
+                    <div class="detail-notes">
+                        <?= !empty($order['internal_notes'])
+                            ? nl2br(htmlspecialchars($order['internal_notes']))
+                            : '<span class="text-muted">No internal notes available.</span>'; ?>
                     </div>
                 </section>
 

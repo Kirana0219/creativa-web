@@ -93,9 +93,13 @@ $paymentMethodOptions = ['Bank Transfer (BCA)', 'Credit Card', 'Cash on Delivery
                                     <?php endforeach; ?>
                                 </select>
                             </label>
-
                         </div>
                     </section> 
+
+                    <section class="order-modal-section">
+                        <h4>Internal Notes</h4>
+                        <textarea name="internal_notes" placeholder="Add a note for internal tracking..."></textarea>
+                    </section>
 
                     <div class="modal-actions">
                         <button type="button" class="btn-modal-secondary" data-bs-dismiss="modal">Cancel</button>

@@ -355,11 +355,6 @@
     font-weight:600;
 }
 
-.customer-email{
-    color:var(--secondary);
-    font-size:13px;
-}
-
 .product-info-cell{
     display:flex;
     align-items:center;

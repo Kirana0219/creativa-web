@@ -36,9 +36,12 @@
 <body>
     <div class="main-content">
         <div class="top-header">
-            <div class="search-box">
+            <!-- <div class="search-box">
                 <i class="ri-search-line"></i>
                 <input type="text" placeholder="Search...">
+            </div> -->
+            <div class="header-breadcrumb">
+                <span><?= htmlspecialchars($breadcrumb ?? 'Dashboard'); ?></span>
             </div>
 
             <div class="header-right">
