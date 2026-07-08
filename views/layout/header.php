@@ -30,11 +30,10 @@
     <link rel="stylesheet" href="assets/css/orders.css">
     <link rel="stylesheet" href="assets/css/users.css">
 
-    <!-- <?php if ($currentPage === 'orders'): ?>
+    <?php if ($currentPage === 'orders'): ?>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <?php endif; ?> -->
+    <?php endif; ?>
 </head>
 
 <body>

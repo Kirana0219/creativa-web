@@ -67,7 +67,6 @@ $paymentMethodOptions = ['Bank Transfer (BCA)', 'Credit Card', 'Cash on Delivery
 
                     <section class="order-modal-section">
                         <h4>Internal Notes</h4>
-
                         <textarea
                             name="internal_notes"
                             placeholder="Add a note for internal tracking..."
