@@ -191,6 +191,7 @@
     background: #F3F3F9;
     padding: 4px;
     border-radius: 10px;
+    border: 1px solid var(--border);
     gap: 2px;
 }
 
@@ -699,7 +700,8 @@
 
 .btn-filter-reset {
     background: white;
-    border: none;
+    border: 1px solid var(--border);
+    border-radius: 10px;
     color: var(--secondary-text);
     font-weight: 600;
     font-size: 14px;
@@ -710,7 +712,7 @@
 .btn-filter-apply {
     background: var(--primary);
     color: #FFFFFF;
-    border: none;
+    border: 1px solid var(--primary);
     border-radius: 8px;
     padding: 8px 20px;
     font-weight: 600;
